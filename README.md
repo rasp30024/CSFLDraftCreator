@@ -1,4 +1,4 @@
-# CSFLDraftCreator
+# CSFL Draft Creator
 
 ## Introduction
 This application was written in support of the CSFL DDSPFB23 league.  The application is written to take a list of draftees, randomize attributes, and format the file so this can be imported into the game.
