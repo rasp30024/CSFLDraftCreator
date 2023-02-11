@@ -287,22 +287,36 @@ namespace CSFLDraftCreator
                 //  the settings are rounded to the nearest 5 to match
                 foreach (var tier in _settings.TierDefinitions)
                 {
-                    tier.Min = 5 * (int)Math.Round(tier.Min / 5.0);
-                    tier.Max = 5 * (int)Math.Round(tier.Max / 5.0);
+                    tier.KeyMin = 5 * (int)Math.Round(tier.KeyMin / 5.0);
+                    tier.KeyMax = 5 * (int)Math.Round(tier.KeyMax / 5.0);
                     tier.Skill = 5 * (int)Math.Round(tier.Skill / 5.0);
                     tier.WE = 5 * (int)Math.Round(tier.WE / 5.0);
 
                     //just to cover incorrect config
-                    if (tier.Max < tier.Min)
-                        tier.Max = tier.Min;
+                    if (tier.KeyMax < tier.KeyMin)
+                        tier.KeyMax = tier.KeyMin;
                 }
                 
                 //Sort our Tiers
                 _settings.TierDefinitions = _settings.TierDefinitions
                     .OrderByDescending(o => o.Order)
-                    .ThenByDescending(o=> o.Max)
-                    .ThenByDescending(o => o.Min)
+                    .ThenByDescending(o=> o.KeyMax)
+                    .ThenByDescending(o => o.KeyMin)
                     .ToList();
+
+                //make sure we are uppercase on skills
+                foreach (PostionalSkillsModel skillModel in _settings.PostionalSkills)
+                {
+                    for (int i = 0; i < skillModel.KeySkill.Count; i++)
+                    {
+                        skillModel.KeySkill[i] = skillModel.KeySkill[i].ToUpper();
+                    }
+                    
+                    for (int i = 0; i < skillModel.SecondarySkill.Count; i++)
+                    {
+                        skillModel.SecondarySkill[i] = skillModel.SecondarySkill[i].ToUpper();
+                    }
+                }
 
                 return true;
             }

@@ -92,6 +92,8 @@
     <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="Models\PlayerPersonalitiesModel.cs" />
     <Compile Include="Models\PlayerSkillsModel.cs" />
+    <Compile Include="Models\PositionTraitListModel.cs" />
+    <Compile Include="Models\PostionalSkillsModel.cs" />
     <Compile Include="Models\SearchPlayerExportCSVModel.cs" />
     <Compile Include="Models\TierDefinitionModel.cs" />
     <Compile Include="Models\UpcomingDraftPlayerCSVModel.cs" />

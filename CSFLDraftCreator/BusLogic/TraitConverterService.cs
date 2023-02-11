@@ -97,8 +97,8 @@ namespace CSFLDraftCreator.BusLogic
 
         private PlayerModel UpdateCriticalValues(List<string> attributes, PlayerModel player)
         {
-            int minPer = _tierInfo.Min / 5;
-            int maxPer = _tierInfo.Max / 5;
+            int minPer = _tierInfo.KeyMin / 5;
+            int maxPer = _tierInfo.KeyMax / 5;
 
             List<PlayerAttributesModel> posAttributes = _posPercentileTiers[player.Pos];
 
@@ -222,7 +222,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 return player;
 
@@ -255,7 +255,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
 
                 return player;
@@ -286,15 +286,15 @@ namespace CSFLDraftCreator.BusLogic
 
                 //team player
                 if (player.Per.TmPl < 65)
-                    player.Per.TmPl = _rnd.Next(65, 100);
+                    player.Per.TmPl = _rnd.Next(65, 99);
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 //Disposition?
                 if (player.Per.Soc < 65)
-                    player.Per.Soc = _rnd.Next(65, 100);
+                    player.Per.Soc = _rnd.Next(65, 99);
 
 
                 return player;
@@ -311,15 +311,15 @@ namespace CSFLDraftCreator.BusLogic
 
                 //team player
                 if (player.Per.TmPl < 65)
-                    player.Per.TmPl = _rnd.Next(65, 100);
+                    player.Per.TmPl = _rnd.Next(65, 99);
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 //Disposition?
                 if (player.Per.Soc < 65)
-                    player.Per.Soc = _rnd.Next(65, 100);
+                    player.Per.Soc = _rnd.Next(65, 99);
 
 
                 return player;
@@ -335,7 +335,7 @@ namespace CSFLDraftCreator.BusLogic
             {
                 //Competitive
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 return player;
             }
@@ -352,28 +352,28 @@ namespace CSFLDraftCreator.BusLogic
                 player = UpdateCriticalValues(criticalAttributes, player);
 
                 if (player.Per.Lea < 65)
-                    player.Per.Lea = _rnd.Next(65, 100);
+                    player.Per.Lea = _rnd.Next(65, 99);
 
                 if (player.Per.Wor < 65)
-                    player.Per.Wor = _rnd.Next(65, 100);
+                    player.Per.Wor = _rnd.Next(65, 99);
 
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 if (player.Per.TmPl < 65)
-                    player.Per.TmPl = _rnd.Next(65, 100);
+                    player.Per.TmPl = _rnd.Next(65, 99);
 
                 if (player.Per.Spor < 65)
-                    player.Per.Spor = _rnd.Next(65, 100);
+                    player.Per.Spor = _rnd.Next(65, 99);
 
                 if (player.Per.Soc < 65)
-                    player.Per.Soc = _rnd.Next(65, 100);
+                    player.Per.Soc = _rnd.Next(65, 99);
 
                 if (player.Per.Mor < 65)
-                    player.Per.Mor = _rnd.Next(65, 100);
+                    player.Per.Mor = _rnd.Next(65, 99);
 
                 if (player.Per.Loy < 65)
-                    player.Per.Loy = _rnd.Next(65, 100);
+                    player.Per.Loy = _rnd.Next(65, 99);
 
 
                 return player;
@@ -402,25 +402,25 @@ namespace CSFLDraftCreator.BusLogic
             try
             {
                 if (player.Per.Mny < 65)
-                    player.Per.Mny = _rnd.Next(65, 100);
+                    player.Per.Mny = _rnd.Next(65, 99);
 
                 if (player.Per.Mkt < 65)
-                    player.Per.Mkt = _rnd.Next(65, 100);
+                    player.Per.Mkt = _rnd.Next(65, 99);
 
                 if (player.Per.PT < 65)
-                    player.Per.PT = _rnd.Next(65, 100);
+                    player.Per.PT = _rnd.Next(65, 99);
 
                 if (player.Per.Win < 65)
-                    player.Per.Win = _rnd.Next(65, 100);
+                    player.Per.Win = _rnd.Next(65, 99);
 
                 if (player.Per.TmPl >= 45)
-                    player.Per.TmPl = _rnd.Next(0, 45);
+                    player.Per.TmPl = _rnd.Next(1, 45);
 
                 if (player.Per.Loy >= 45)
-                    player.Per.Loy = _rnd.Next(0, 45);
+                    player.Per.Loy = _rnd.Next(1, 45);
 
                 if (player.Per.Spor >= 45)
-                    player.Per.Spor = _rnd.Next(0, 45);
+                    player.Per.Spor = _rnd.Next(1, 45);
 
 
                 return player;
@@ -463,16 +463,16 @@ namespace CSFLDraftCreator.BusLogic
             try
             {
                 if (player.Per.Wor < 65)
-                    player.Per.Wor = _rnd.Next(65, 100);
+                    player.Per.Wor = _rnd.Next(65, 99);
 
                 if (player.Per.TmPl < 65)
-                    player.Per.TmPl = _rnd.Next(65, 100);
+                    player.Per.TmPl = _rnd.Next(65, 99);
 
                 if (player.Per.Spor < 65)
-                    player.Per.Spor = _rnd.Next(65, 100);
+                    player.Per.Spor = _rnd.Next(65, 99);
 
                 if (player.Per.Loy < 65)
-                    player.Per.Loy = _rnd.Next(65, 100);
+                    player.Per.Loy = _rnd.Next(65, 99);
 
                 return player;
             }
@@ -504,7 +504,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 //Leadership
                 if (player.Per.Lea < 65)
-                    player.Per.Lea = _rnd.Next(65, 100);
+                    player.Per.Lea = _rnd.Next(65, 99);
 
                 return player;
             }
@@ -546,7 +546,7 @@ namespace CSFLDraftCreator.BusLogic
             try
             {
                 if (player.Per.Loy >= 45)
-                    player.Per.Loy = _rnd.Next(0, 45);
+                    player.Per.Loy = _rnd.Next(1, 45);
 
                 return player;
             }
@@ -561,7 +561,7 @@ namespace CSFLDraftCreator.BusLogic
             {
                 //Leadership
                 if (player.Per.Lea < 65)
-                    player.Per.Lea = _rnd.Next(65, 100);
+                    player.Per.Lea = _rnd.Next(65, 99);
 
                 return player;
             }
@@ -663,7 +663,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 return player;
             }
@@ -720,19 +720,19 @@ namespace CSFLDraftCreator.BusLogic
             {
                 //Leadership
                 if (player.Per.Lea < 65)
-                    player.Per.Lea = _rnd.Next(65, 100);
+                    player.Per.Lea = _rnd.Next(65, 99);
 
                 if (player.Per.Wor < 65)
-                    player.Per.Wor = _rnd.Next(65, 100);
+                    player.Per.Wor = _rnd.Next(65, 99);
 
                 if (player.Per.Spor < 65)
-                    player.Per.Spor = _rnd.Next(65, 100);
+                    player.Per.Spor = _rnd.Next(65, 99);
 
                 if (player.Per.Soc < 65)
-                    player.Per.Soc = _rnd.Next(65, 100);
+                    player.Per.Soc = _rnd.Next(65, 99);
 
                 if (player.Per.Mor < 65)
-                    player.Per.Mor = _rnd.Next(65, 100);
+                    player.Per.Mor = _rnd.Next(65, 99);
 
 
                 return player;
@@ -779,7 +779,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 return player;
             }
@@ -825,7 +825,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
 
                 return player;
@@ -844,7 +844,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 //competitiveness
                 if (player.Per.Com < 65)
-                    player.Per.Com = _rnd.Next(65, 100);
+                    player.Per.Com = _rnd.Next(65, 99);
 
                 return player;
             }
@@ -859,13 +859,13 @@ namespace CSFLDraftCreator.BusLogic
             {
                 //Leadership
                 if (player.Per.TmPl < 65)
-                    player.Per.TmPl = _rnd.Next(65, 100);
+                    player.Per.TmPl = _rnd.Next(65, 99);
 
                 if (player.Per.Loy < 65)
-                    player.Per.Loy = _rnd.Next(65, 100);
+                    player.Per.Loy = _rnd.Next(65, 99);
 
                 if (player.Per.Mny >= 45)
-                    player.Per.Mny = _rnd.Next(0, 45);
+                    player.Per.Mny = _rnd.Next(1, 45);
 
 
                 return player;
@@ -895,7 +895,7 @@ namespace CSFLDraftCreator.BusLogic
             {
                 //competitiveness
                 if (player.Per.Wor < 65)
-                    player.Per.Wor = _rnd.Next(65, 100);
+                    player.Per.Wor = _rnd.Next(65, 99);
 
                 return player;
             }

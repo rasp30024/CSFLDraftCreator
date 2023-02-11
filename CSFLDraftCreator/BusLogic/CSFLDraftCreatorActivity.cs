@@ -770,24 +770,59 @@ namespace CSFLDraftCreator.BusLogic
                 }
 
                 //convert grades of min and max to a useful index needed to pull the info from our active player position 
-                int minPer = tierInfo.Min / 5;
-                int maxPer = tierInfo.Max / 5;
+                int keyMinPer = tierInfo.KeyMin / 5;
+                int keyMaxPer = tierInfo.KeyMax / 5;
+                int secMinPer = tierInfo.SecMin / 5;
+                int secMaxPer = tierInfo.SecMax / 5;
+
+                //Get Lists for skills
+                PostionalSkillsModel skillModel = _settings.PostionalSkills.Where(s => s.Position.ToLower() == player.Pos.ToLower()).FirstOrDefault();
+                if (skillModel == null)
+                {
+                    _log.Error($"Could not find position {player.Pos} defined in PostionalSkills");
+                    return null;
+                }
+
+                //if (player.Pos == "QB")
+                //    Console.WriteLine("here");
 
                 //Go through each attribute and set a random value from min to max indexes
                 foreach (string attrToGet in attributes)
                 {
+                    string attType = "unimporant";
 
-                    //use reflexion to pull the property of the attribute to get (e.g. str, intel) for min number
-                    PlayerAttributesModel minPosAttr = posAttributes[minPer];
-                    Type mintype = minPosAttr.GetType();
-                    PropertyInfo minPosProp = mintype.GetProperty(attrToGet);
-                    int minPosRating = (int)minPosProp.GetValue(minPosAttr, null);
+                    int minPosRating = 1;
+                    int maxPosRating = 99;
 
-                    //use reflexion to pull the property of the attribute to get (e.g. str, intel) for max number
-                    PlayerAttributesModel maxPosAttr = posAttributes[maxPer];
-                    Type maxtype = maxPosAttr.GetType();
-                    PropertyInfo maxPosProp = maxtype.GetProperty(attrToGet);
-                    int maxPosRating = (int)maxPosProp.GetValue(maxPosAttr, null);
+                    if (skillModel.KeySkill.Contains(attrToGet.ToUpper()))
+                    {
+                        //use reflexion to pull the property of the attribute to get (e.g. str, intel) for min number
+                        PlayerAttributesModel minPosAttr = posAttributes[keyMinPer];
+                        Type mintype = minPosAttr.GetType();
+                        PropertyInfo minPosProp = mintype.GetProperty(attrToGet);
+                        minPosRating = (int)minPosProp.GetValue(minPosAttr, null);
+
+                        //use reflexion to pull the property of the attribute to get (e.g. str, intel) for max number
+                        PlayerAttributesModel maxPosAttr = posAttributes[keyMaxPer];
+                        Type maxtype = maxPosAttr.GetType();
+                        PropertyInfo maxPosProp = maxtype.GetProperty(attrToGet);
+                        maxPosRating = (int)maxPosProp.GetValue(maxPosAttr, null);
+                    }
+                    else if (skillModel.SecondarySkill.Contains(attrToGet.ToUpper()))
+                    {
+                        //use reflexion to pull the property of the attribute to get (e.g. str, intel) for min number
+                        PlayerAttributesModel minPosAttr = posAttributes[secMinPer];
+                        Type mintype = minPosAttr.GetType();
+                        PropertyInfo minPosProp = mintype.GetProperty(attrToGet);
+                        minPosRating = (int)minPosProp.GetValue(minPosAttr, null);
+
+                        //use reflexion to pull the property of the attribute to get (e.g. str, intel) for max number
+                        PlayerAttributesModel maxPosAttr = posAttributes[secMaxPer];
+                        Type maxtype = maxPosAttr.GetType();
+                        PropertyInfo maxPosProp = maxtype.GetProperty(attrToGet);
+                        maxPosRating = (int)maxPosProp.GetValue(maxPosAttr, null);
+                    }
+
 
                     //Randomize he attribute
                     int newAttrRating = _rnd.Next(minPosRating, maxPosRating);
@@ -800,13 +835,23 @@ namespace CSFLDraftCreator.BusLogic
                 }
 
                 //Work Ethic 
-                player.Per.Wor = _rnd.Next(tierInfo.WE > 0 ? tierInfo.WE : 0, 100);
+                if (tierInfo.WE >= 0)
+                {
+                    player.Per.Wor = _rnd.Next(tierInfo.WE > 0 ? tierInfo.WE : 25, 99);
+                }
+
+                //Endurance
+                if (tierInfo.End >= 0)
+                {
+                    player.Attr.End = _rnd.Next(tierInfo.End > 0 ? tierInfo.WE : 25, 99);
+                }
 
                 //Skill
-                int skill = _rnd.Next(tierInfo.Skill > 0 ? tierInfo.Skill : 0, 100);
+                int skill = _rnd.Next(tierInfo.Skill > 0 ? tierInfo.Skill : 25, 99);
                 Type playerSkillType = player.Skills.GetType();
                 PropertyInfo playerSkillProp = playerSkillType.GetProperty(player.Pos);
                 playerSkillProp.SetValue(player.Skills, Convert.ChangeType(skill, playerSkillProp.PropertyType), null);
+
 
                 return player;
             }
@@ -822,20 +867,20 @@ namespace CSFLDraftCreator.BusLogic
             {
                 PlayerPersonalitiesModel personality = new PlayerPersonalitiesModel();
 
-                personality.Lea = _rnd.Next(1, 100);
-                personality.Wor = _rnd.Next(1, 100);
-                personality.Com = _rnd.Next(1, 100);
-                personality.TmPl = _rnd.Next(1, 100);
-                personality.Spor = _rnd.Next(1, 100);
-                personality.Soc = _rnd.Next(1, 100);
-                personality.Mny = _rnd.Next(1, 100);
-                personality.Sec = _rnd.Next(1, 100);
-                personality.Loy = _rnd.Next(1, 100);
-                personality.Win = _rnd.Next(1, 100);
-                personality.PT = _rnd.Next(1, 100);
-                personality.Home = _rnd.Next(1, 100);
-                personality.Mkt = _rnd.Next(1, 100);
-                personality.Mor = _rnd.Next(1, 100);
+                personality.Lea = _rnd.Next(5, 99);
+                personality.Wor = _rnd.Next(5, 99);
+                personality.Com = _rnd.Next(5, 99);
+                personality.TmPl = _rnd.Next(5, 99);
+                personality.Spor = _rnd.Next(5, 99);
+                personality.Soc = _rnd.Next(5, 99);
+                personality.Mny = _rnd.Next(5, 99);
+                personality.Sec = _rnd.Next(5, 99);
+                personality.Loy = _rnd.Next(5, 99);
+                personality.Win = _rnd.Next(5, 99);
+                personality.PT = _rnd.Next(5, 99);
+                personality.Home = _rnd.Next(5, 99);
+                personality.Mkt = _rnd.Next(5, 99);
+                personality.Mor = _rnd.Next(5, 99);
 
                 return personality;
             }
