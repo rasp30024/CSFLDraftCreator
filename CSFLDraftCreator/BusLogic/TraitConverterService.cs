@@ -26,7 +26,7 @@ namespace CSFLDraftCreator.BusLogic
             }
         }
 
-        public string GetTrait(string pos)
+        public string GetPositionalTrait(string pos, List<string> existingTraits)
         {
 
             Dictionary<string, List<string>> traitsByPosition = new Dictionary<string, List<string>>();
@@ -47,30 +47,52 @@ namespace CSFLDraftCreator.BusLogic
             traitsByPosition.Add("K", _settings.PosTraits.K);
             traitsByPosition.Add("P", _settings.PosTraits.P);
 
-            //traitsByPosition.Add("QB", new List<string>() { "ClutchQB", "Dualthreat", "GameManager", "Gunslinger", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("RB", new List<string>() { "AllPurposeRB", "PowerRunner", "ScatBack", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("FB", new List<string>() { "BlockingFB", "PowerRunner", "ReceiveFB", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("C", new List<string>() { "AthBlocker", "TenaciousBlocker", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("G", new List<string>() { "AthBlocker", "TenaciousBlocker", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("T", new List<string>() { "AthBlocker", "TenaciousBlocker", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("TE", new List<string>() { "BlockingTE", "ReceivingTE", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("WR", new List<string>() { "DeepThreat", "PossessionWR", "SlotReceiver", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("CB", new List<string>() { "PressCorner", "ShutDownCorner", "SlotCorner", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("LB", new List<string>() { "CoverageLB", "HybridLB", "Thumper", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("DE", new List<string>() { "BullRusher", "SpeedRusher", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("DT", new List<string>() { "BullRusher", "NoseTackle", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("FS", new List<string>() { "BoxSafety", "Centerfielder", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("SS", new List<string>() { "BoxSafety", "Centerfielder", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("K", new List<string>() { "ClutchKicker", "PowerKicker", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
-            //traitsByPosition.Add("P", new List<string>() { "ClutchKicker", "PowerKicker", "BadInfluence", "InjuryProne", "LockerLeader", "FilmGeek", "ProBloodline", "WorkoutFanatic" });
 
-            _rnd = new Random(Guid.NewGuid().GetHashCode());
-            List<string> traits = traitsByPosition[pos];
-            Shuffle<string>(traits);
-            int indexToGet = _rnd.Next(0, traits.Count - 1);
+            int count = 0; //used as to make sure we don't get stuck trying to find a match
+            bool keepLooking = true;
+            string traitName = ""; 
+            do 
+            {
+                _rnd = new Random(Guid.NewGuid().GetHashCode());
+                List<string> traits = traitsByPosition[pos];
+                Shuffle<string>(traits);
+                int indexToGet = _rnd.Next(0, traits.Count - 1);
 
-            return traits[indexToGet];
+                if (!existingTraits.Contains(traits[indexToGet]))  //make sure this is not a duplicate
+                {
+                    traitName = traits[indexToGet];
+                    keepLooking = false;
+                }
 
+                count++;
+            } while (!keepLooking && count < 20);
+
+            return traitName;
+
+        }
+        public string GetPersonalityTrait(List<string> existingTraits)
+        {
+
+            int count = 0; //used as to make sure we don't get stuck trying to find a match
+            bool keepLooking = true;
+            string traitName = "";
+            do
+            {
+                _rnd = new Random(Guid.NewGuid().GetHashCode());
+                List<string> traits = _settings.PosTraits.Personality;
+                Shuffle<string>(traits);
+                int indexToGet = _rnd.Next(0, traits.Count - 1);
+
+                if (!existingTraits.Contains(traits[indexToGet]))  //make sure this is not a duplicate
+                {
+                    traitName = traits[indexToGet];
+                    keepLooking = false;
+                }
+
+                count++;
+            } while (!keepLooking && count < 20);
+
+            return traitName;
         }
 
         private PlayerModel UpdateCriticalValues(List<string> attributes, PlayerModel player)
@@ -149,6 +171,20 @@ namespace CSFLDraftCreator.BusLogic
                 throw;
             }
         }
+        public PlayerModel SetAthlete(PlayerModel player)
+        {
+            try
+            {
+                List<string> criticalAttributes = new List<string>() { "Str", "Agi", "Spe", "Intel", "End" };
+                player = UpdateCriticalValues(criticalAttributes, player);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public PlayerModel SetBlockingFB(PlayerModel player)
         {
             try
@@ -171,6 +207,25 @@ namespace CSFLDraftCreator.BusLogic
                 player = UpdateCriticalValues(criticalAttributes, player);
 
                 return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetBookEndTackle(PlayerModel player)
+        {
+            try
+            {
+                List<string> criticalAttributes = new List<string>() { "Agi", "Spe", "PBl", "Intel", "End" };
+                player = UpdateCriticalValues(criticalAttributes, player);
+
+                //competitiveness
+                if (player.Per.Com < 65)
+                    player.Per.Com = _rnd.Next(65, 100);
+
+                return player;
+
             }
             catch
             {
@@ -274,12 +329,99 @@ namespace CSFLDraftCreator.BusLogic
                 throw;
             }
         }
+        public PlayerModel SetCompetitor(PlayerModel player)
+        {
+            try
+            {
+                //Competitive
+                if (player.Per.Com < 65)
+                    player.Per.Com = _rnd.Next(65, 100);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetConsummatePro(PlayerModel player)
+        {
+            try
+            {
+                List<string> criticalAttributes = new List<string>() { "Str", "Agi", "Spe", "Intel", "End" };
+                player = UpdateCriticalValues(criticalAttributes, player);
+
+                if (player.Per.Lea < 65)
+                    player.Per.Lea = _rnd.Next(65, 100);
+
+                if (player.Per.Wor < 65)
+                    player.Per.Wor = _rnd.Next(65, 100);
+
+                if (player.Per.Com < 65)
+                    player.Per.Com = _rnd.Next(65, 100);
+
+                if (player.Per.TmPl < 65)
+                    player.Per.TmPl = _rnd.Next(65, 100);
+
+                if (player.Per.Spor < 65)
+                    player.Per.Spor = _rnd.Next(65, 100);
+
+                if (player.Per.Soc < 65)
+                    player.Per.Soc = _rnd.Next(65, 100);
+
+                if (player.Per.Mor < 65)
+                    player.Per.Mor = _rnd.Next(65, 100);
+
+                if (player.Per.Loy < 65)
+                    player.Per.Loy = _rnd.Next(65, 100);
+
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public PlayerModel SetCoverageLB(PlayerModel player)
         {
             try
             {
                 List<string> criticalAttributes = new List<string>() { "Agi", "Spe", "Han", "Intel" };
                 player = UpdateCriticalValues(criticalAttributes, player);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetDiva(PlayerModel player)
+        {
+            try
+            {
+                if (player.Per.Mny < 65)
+                    player.Per.Mny = _rnd.Next(65, 100);
+
+                if (player.Per.Mkt < 65)
+                    player.Per.Mkt = _rnd.Next(65, 100);
+
+                if (player.Per.PT < 65)
+                    player.Per.PT = _rnd.Next(65, 100);
+
+                if (player.Per.Win < 65)
+                    player.Per.Win = _rnd.Next(65, 100);
+
+                if (player.Per.TmPl >= 45)
+                    player.Per.TmPl = _rnd.Next(0, 45);
+
+                if (player.Per.Loy >= 45)
+                    player.Per.Loy = _rnd.Next(0, 45);
+
+                if (player.Per.Spor >= 45)
+                    player.Per.Spor = _rnd.Next(0, 45);
+
 
                 return player;
             }
@@ -308,6 +450,29 @@ namespace CSFLDraftCreator.BusLogic
             {
                 List<string> criticalAttributes = new List<string>() { "Agi", "Arm", "Spe", "Acc" };
                 player = UpdateCriticalValues(criticalAttributes, player);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetFanFavorite(PlayerModel player)
+        {
+            try
+            {
+                if (player.Per.Wor < 65)
+                    player.Per.Wor = _rnd.Next(65, 100);
+
+                if (player.Per.TmPl < 65)
+                    player.Per.TmPl = _rnd.Next(65, 100);
+
+                if (player.Per.Spor < 65)
+                    player.Per.Spor = _rnd.Next(65, 100);
+
+                if (player.Per.Loy < 65)
+                    player.Per.Loy = _rnd.Next(65, 100);
 
                 return player;
             }
@@ -376,6 +541,20 @@ namespace CSFLDraftCreator.BusLogic
                 throw;
             }
         }
+        public PlayerModel SetJourneyman(PlayerModel player)
+        {
+            try
+            {
+                if (player.Per.Loy >= 45)
+                    player.Per.Loy = _rnd.Next(0, 45);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public PlayerModel SetLockerLeader(PlayerModel player)
         {
             try
@@ -396,6 +575,20 @@ namespace CSFLDraftCreator.BusLogic
             try
             {
                 List<string> criticalAttributes = new List<string>() { "Str", "Agi", "Tck", "End" };
+                player = UpdateCriticalValues(criticalAttributes, player);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetPerceptive(PlayerModel player)
+        {
+            try
+            {
+                List<string> criticalAttributes = new List<string>() { "Intel" };
                 player = UpdateCriticalValues(criticalAttributes, player);
 
                 return player;
@@ -479,6 +672,20 @@ namespace CSFLDraftCreator.BusLogic
                 throw;
             }
         }
+        public PlayerModel SetRawTalent(PlayerModel player)
+        {
+            try
+            {
+                List<string> criticalAttributes = new List<string>() { "Str", "Agi", "Spe", "Intel" };
+                player = UpdateCriticalValues(criticalAttributes, player);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public PlayerModel SetReceiveFB(PlayerModel player)
         {
             try
@@ -498,6 +705,48 @@ namespace CSFLDraftCreator.BusLogic
             try
             {
                 List<string> criticalAttributes = new List<string>() { "Agi", "Spe", "Han", "Intel" };
+                player = UpdateCriticalValues(criticalAttributes, player);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetRoleModel(PlayerModel player)
+        {
+            try
+            {
+                //Leadership
+                if (player.Per.Lea < 65)
+                    player.Per.Lea = _rnd.Next(65, 100);
+
+                if (player.Per.Wor < 65)
+                    player.Per.Wor = _rnd.Next(65, 100);
+
+                if (player.Per.Spor < 65)
+                    player.Per.Spor = _rnd.Next(65, 100);
+
+                if (player.Per.Soc < 65)
+                    player.Per.Soc = _rnd.Next(65, 100);
+
+                if (player.Per.Mor < 65)
+                    player.Per.Mor = _rnd.Next(65, 100);
+
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetRunningQB(PlayerModel player)
+        {
+            try
+            {
+                List<string> criticalAttributes = new List<string>() { "Agi", "Spe", "Intel" };
                 player = UpdateCriticalValues(criticalAttributes, player);
 
                 return player;
@@ -596,6 +845,28 @@ namespace CSFLDraftCreator.BusLogic
                 //competitiveness
                 if (player.Per.Com < 65)
                     player.Per.Com = _rnd.Next(65, 100);
+
+                return player;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        public PlayerModel SetTeamPlayer(PlayerModel player)
+        {
+            try
+            {
+                //Leadership
+                if (player.Per.TmPl < 65)
+                    player.Per.TmPl = _rnd.Next(65, 100);
+
+                if (player.Per.Loy < 65)
+                    player.Per.Loy = _rnd.Next(65, 100);
+
+                if (player.Per.Mny >= 45)
+                    player.Per.Mny = _rnd.Next(0, 45);
+
 
                 return player;
             }

@@ -181,6 +181,64 @@ namespace CSFLDraftCreator.BusLogic
                 return;
             }
         }
+        public void ConvertDraftJSONToCSV(string UpcomingDraftJson, string outputFile)
+        {
+            try
+            {
+                //Load JSON into our object
+                string upcomingDraftData = File.ReadAllText(UpcomingDraftJson);
+                AllPlayersModel upcomingDraftJSON = JsonConvert.DeserializeObject<AllPlayersModel>(upcomingDraftData);
+                if (upcomingDraftJSON == null || upcomingDraftJSON.Players == null || upcomingDraftJSON.Players.Count == 0)
+                {
+                    _log.Error("Error running ConvertUpcomingDraftJSONToCSV - cannot convert JSON to an object");
+                    return;
+                }
+
+                //Create automap configurations
+                var configBase = new MapperConfiguration(cfg => cfg.CreateMap<PlayerModel, UpcomingDraftPlayerCSVModel>());
+                var mapperBase = configBase.CreateMapper();
+
+                var configAttr = new MapperConfiguration(cfg => cfg.CreateMap<PlayerAttributesModel, UpcomingDraftPlayerCSVModel>());
+                var mapperAttr = configAttr.CreateMapper();
+
+                var configPer = new MapperConfiguration(cfg => cfg.CreateMap<PlayerPersonalitiesModel, UpcomingDraftPlayerCSVModel>());
+                var mapperPer = configPer.CreateMapper();
+
+                var configSkills = new MapperConfiguration(cfg => cfg.CreateMap<PlayerSkillsModel, UpcomingDraftPlayerCSVModel>());
+                var mapperSkills = configSkills.CreateMapper();
+
+
+                List<UpcomingDraftPlayerCSVModel> upcomingDraftCSV = new List<UpcomingDraftPlayerCSVModel>();
+                foreach (PlayerModel playerJSON in upcomingDraftJSON.Players)
+                {
+
+                    //Copy Base info
+                    UpcomingDraftPlayerCSVModel playerCSV = mapperBase.Map<UpcomingDraftPlayerCSVModel>(playerJSON);
+                    //Copy Attributes
+                    playerCSV = mapperAttr.Map(playerJSON.Attr, playerCSV);
+                    //Copy Personalities
+                    playerCSV = mapperPer.Map(playerJSON.Per, playerCSV);
+                    //Copy Skills
+                    playerCSV = mapperSkills.Map(playerJSON.Skills, playerCSV);
+
+                    upcomingDraftCSV.Add(playerCSV);
+                }
+
+
+                using (var writer = new StreamWriter(outputFile)) //cfaplayers.csv
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(upcomingDraftCSV);
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                _log.Error("Error running ConvertUpcomingDraftJSONToCSV - " + e.Message);
+                return;
+            }
+        }
         public void GetLeaguePositionSummary(string activePlayersCSV_Location, string outputFile)
         {
             try
@@ -908,117 +966,232 @@ namespace CSFLDraftCreator.BusLogic
 
                 if (tierInfo.AllowTag)
                 {
+                    List<string> traits = new List<string>();
                     if (string.IsNullOrEmpty(player.Trait))
                     {
+                        bool posTagAdded = false;
+                        bool perTagAdded = false;
+
+                        //first check for positional tags
                         int rollD100 = _rnd.Next(1, 100);
-                        if (rollD100 <= _settings.TagPercentage)
-                            player.Trait = traitConverter.GetTrait(player.Pos);
+                        if (rollD100 <= _settings.PositionalTagPercentage)
+                        {
+                            string traitName = traitConverter.GetPositionalTrait(player.Pos, traits);
+                            traits.Add(traitName);
+
+                            posTagAdded = true;
+                        }
+                        
+                        //next roll for personality 
+                        rollD100 = _rnd.Next(1, 100);
+                        if (rollD100 <= _settings.PersonalityTagPercetage)
+                        {
+                            string traitName = traitConverter.GetPersonalityTrait(traits);
+                            traits.Add(traitName);
+
+                            perTagAdded = true;
+                        }
+
+                        //now check if we need to double tag... only need to do this if only one tag is found
+                        if ((perTagAdded && !posTagAdded) || (!perTagAdded && posTagAdded))
+                        {
+                            rollD100 = _rnd.Next(1, 100);
+                            if (rollD100 <= _settings.AddSecondTagPercentage)
+                            {
+                                if (posTagAdded)
+                                {
+                                    string traitName = traitConverter.GetPersonalityTrait(traits);
+                                    traits.Add(traitName);
+                                }
+                                else
+                                {
+                                    string traitName = traitConverter.GetPositionalTrait(player.Pos, traits);
+                                    traits.Add(traitName);
+
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string[] existingTraits = player.Trait.Split('|');
+                        if (existingTraits != null)
+                        {
+                            traits = existingTraits.ToList();
+                        }
+                        else
+                        {
+                            traits.Add(player.Trait);
+                        }
                     }
 
-                    switch (player.Trait)
+                    if (traits.Count > 0)
                     {
-                        case "AllPurposeRB":
-                            player = traitConverter.SetAllPurposeRB(player);
-                            break;
-                        case "AthBlocker":
-                            player = traitConverter.SetAthBlocker(player);
-                            break;
-                        case "BlockingFB":
-                            player = traitConverter.SetBlockingFB(player);
-                            break;
-                        case "BlockingTE":
-                            player = traitConverter.SetBlockingTE(player);
-                            break;
-                        case "BoxSafety":
-                            player = traitConverter.SetBoxSafety(player);
-                            break;
-                        case "BullRusher":
-                            player = traitConverter.SetBullRusher(player);
-                            break;
-                        case "Centerfielder":
-                            player = traitConverter.SetCenterfielder(player);
-                            break;
-                        case "ClutchKicker":
-                            player = traitConverter.SetClutchKicker(player);
-                            break;
-                        case "ClutchQB":
-                            player = traitConverter.SetClutchQB(player);
-                            break;
-                        case "CoverageLB":
-                            player = traitConverter.SetCoverageLB(player);
-                            break;
-                        case "DeepThreat":
-                            player = traitConverter.SetDeepThreat(player);
-                            break;
-                        case "Dualthreat":
-                            player = traitConverter.SetDualthreat(player);
-                            break;
-                        case "FilmGeek":
-                            player = traitConverter.SetFilmGeek(player);
-                            break;
-                        case "GameManager":
-                            player = traitConverter.SetGameManager(player);
-                            break;
-                        case "Gunslinger":
-                            player = traitConverter.SetGunslinger(player);
-                            break;
-                        case "HybridLB":
-                            player = traitConverter.SetHybridLB(player);
-                            break;
-                        case "LockerLeader":
-                            player = traitConverter.SetLockerLeader(player);
-                            break;
-                        case "NoseTackle":
-                            player = traitConverter.SetNoseTackle(player);
-                            break;
-                        case "PossessionWR":
-                            player = traitConverter.SetPossessionWR(player);
-                            break;
-                        case "PowerKicker":
-                            player = traitConverter.SetPowerKicker(player);
-                            break;
-                        case "PowerRunner":
-                            player = traitConverter.SetPowerRunner(player);
-                            break;
-                        case "PressCorner":
-                            player = traitConverter.SetPressCorner(player);
-                            break;
-                        case "ProBloodline":
-                            player = traitConverter.SetProBloodline(player);
-                            break;
-                        case "ReceiveFB":
-                            player = traitConverter.SetReceiveFB(player);
-                            break;
-                        case "ReceivingTE":
-                            player = traitConverter.SetReceivingTE(player);
-                            break;
-                        case "ScatBack":
-                            player = traitConverter.SetScatBack(player);
-                            break;
-                        case "ShutDownCorner":
-                            player = traitConverter.SetShutDownCorner(player);
-                            break;
-                        case "SlotCorner":
-                            player = traitConverter.SetSlotCorner(player);
-                            break;
-                        case "SlotReceiver":
-                            player = traitConverter.SetSlotReceiver(player);
-                            break;
-                        case "SpeedRusher":
-                            player = traitConverter.SetSpeedRusher(player);
-                            break;
-                        case "TenaciousBlocker":
-                            player = traitConverter.SetTenaciousBlocker(player);
-                            break;
-                        case "Thumper":
-                            player = traitConverter.SetThumper(player);
-                            break;
-                        case "WorkoutFanatic":
-                            player = traitConverter.SetWorkoutFanatic(player);
-                            break;
-                        case "ZoneCorner":
-                            player = traitConverter.SetZoneCorner(player);
-                            break;
+                        //RunningQB is actually a flag not a trait so treat it as such
+                        int runningQBIndex = traits.IndexOf("RunningQB");
+                        if (runningQBIndex >= 0)
+                        {
+                            traits.RemoveAt(runningQBIndex);
+                            player.Flg = "RunningQB";
+                        }
+                        
+                        if (traits.Count > 0)
+                            player.Trait = string.Join("|", traits);
+
+                    }
+
+                    foreach (string trait in traits)
+                    {
+                        switch (trait)
+                        {
+                            case "AllPurposeRB":
+                                player = traitConverter.SetAllPurposeRB(player);
+                                break;
+                            case "AthBlocker":
+                                player = traitConverter.SetAthBlocker(player);
+                                break;
+                            case "Athlete":
+                                player = traitConverter.SetAthlete(player);
+                                break;
+                            case "BlockingFB":
+                                player = traitConverter.SetBlockingFB(player);
+                                break;
+                            case "BlockingTE":
+                                player = traitConverter.SetBlockingTE(player);
+                                break;
+                            case "BoxSafety":
+                                player = traitConverter.SetBoxSafety(player);
+                                break;
+                            case "BookEndTackle":
+                                player = traitConverter.SetBookEndTackle(player);
+                                break;
+                            case "BullRusher":
+                                player = traitConverter.SetBullRusher(player);
+                                break;
+                            case "Centerfielder":
+                                player = traitConverter.SetCenterfielder(player);
+                                break;
+                            case "ClutchKicker":
+                                player = traitConverter.SetClutchKicker(player);
+                                break;
+                            case "ClutchQB":
+                                player = traitConverter.SetClutchQB(player);
+                                break;
+                            case "Competitor":
+                                player = traitConverter.SetCompetitor(player);
+                                break;
+                            case "CommunityBenefactor":
+                                //No adj needed
+                                break;
+                            case "ConsummatePro":
+                                player = traitConverter.SetConsummatePro(player);
+                                break;
+                            case "CoverageLB":
+                                player = traitConverter.SetCoverageLB(player);
+                                break;
+                            case "DeepThreat":
+                                player = traitConverter.SetDeepThreat(player);
+                                break;
+                            case "Distraction":
+                                //No adj needed
+                                break;
+                            case "Diva":
+                                player = traitConverter.SetDiva(player);
+                                break;
+                            case "Dualthreat":
+                                player = traitConverter.SetDualthreat(player);
+                                break;
+                            case "FilmGeek":
+                                player = traitConverter.SetFilmGeek(player);
+                                break;
+                            case "FanFavorite":
+                                player = traitConverter.SetFanFavorite(player);
+                                break;
+                            case "GameManager":
+                                player = traitConverter.SetGameManager(player);
+                                break;
+                            case "Gunslinger":
+                                player = traitConverter.SetGunslinger(player);
+                                break;
+                            case "HybridLB":
+                                player = traitConverter.SetHybridLB(player);
+                                break;
+                            case "Journeyman":
+                                player = traitConverter.SetJourneyman(player);
+                                break;
+                            case "LockerLeader":
+                                player = traitConverter.SetLockerLeader(player);
+                                break;
+                            case "MediaDarling":
+                                //No adj needed
+                                break;
+                            case "NoseTackle":
+                                player = traitConverter.SetNoseTackle(player);
+                                break;
+                            case "PossessionWR":
+                                player = traitConverter.SetPossessionWR(player);
+                                break;
+                            case "Perceptive":
+                                player = traitConverter.SetPerceptive(player);
+                                break;
+                            case "PowerKicker":
+                                player = traitConverter.SetPowerKicker(player);
+                                break;
+                            case "PowerRunner":
+                                player = traitConverter.SetPowerRunner(player);
+                                break;
+                            case "PressCorner":
+                                player = traitConverter.SetPressCorner(player);
+                                break;
+                            case "ProBloodline":
+                                player = traitConverter.SetProBloodline(player);
+                                break;
+                            case "RawTalent":
+                                player = traitConverter.SetRawTalent(player);
+                                break;
+                            case "ReceiveFB":
+                                player = traitConverter.SetReceiveFB(player);
+                                break;
+                            case "ReceivingTE":
+                                player = traitConverter.SetReceivingTE(player);
+                                break;
+                            case "RunningQB":
+                                player = traitConverter.SetRunningQB(player);
+                                break;
+                            case "RoleModel":
+                                player = traitConverter.SetRoleModel(player);
+                                break;
+                            case "ScatBack":
+                                player = traitConverter.SetScatBack(player);
+                                break;
+                            case "ShutDownCorner":
+                                player = traitConverter.SetShutDownCorner(player);
+                                break;
+                            case "SlotCorner":
+                                player = traitConverter.SetSlotCorner(player);
+                                break;
+                            case "SlotReceiver":
+                                player = traitConverter.SetSlotReceiver(player);
+                                break;
+                            case "SpeedRusher":
+                                player = traitConverter.SetSpeedRusher(player);
+                                break;
+                            case "TenaciousBlocker":
+                                player = traitConverter.SetTenaciousBlocker(player);
+                                break;
+                            case "TeamPlayer":
+                                player = traitConverter.SetTeamPlayer(player);
+                                break;
+                            case "Thumper":
+                                player = traitConverter.SetThumper(player);
+                                break;
+                            case "WorkoutFanatic":
+                                player = traitConverter.SetWorkoutFanatic(player);
+                                break;
+                            case "ZoneCorner":
+                                player = traitConverter.SetZoneCorner(player);
+                                break;
+                        }
                     }
                 }
 

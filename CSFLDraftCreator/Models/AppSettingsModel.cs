@@ -14,7 +14,13 @@ namespace CSFLDraftCreator.Models
         public string DraftUpdateJSON_OutputFile { get; set; } = string.Empty;
         public string PlayerSummaryHTML_OutputFile { get; set; } = string.Empty;
         public string DraftUpdateCSV_InputFile { get; set; } = string.Empty;
-        public int TagPercentage { get; set; }
+        public string UpcomingDraftJSON_InputFile { get; set; } = string.Empty;
+        public string UpcomingDraftCSV_OutputFile { get; set; } = string.Empty;
+
+        public int PositionalTagPercentage { get; set; }
+        public int PersonalityTagPercetage { get; set; }
+        public int AddSecondTagPercentage { get; set; } 
+
         public List<TierDefinitionModel> TierDefinitions { get; set; }
         public PositionTraitListModel PosTraits { get; set; } 
     }
@@ -37,6 +43,7 @@ namespace CSFLDraftCreator.Models
         public List<string> SS { get; set; } = new List<string>();
         public List<string> K { get; set; } = new List<string>();
         public List<string> P { get; set; } = new List<string>();
+        public List<string> Personality { get; set; } = new List<string>(); 
 
     }
 }

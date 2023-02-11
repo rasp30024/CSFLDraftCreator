@@ -55,6 +55,9 @@ namespace CSFLDraftCreator
                         case '3'://Convert Update Draft Json from CSV
                             ConvertDraftJSONFromCSV();
                             break;
+                        case '4'://Convert Allplayer to csv
+                            ConvertDraftJSONToCSV();
+                            break;
                         case 'x': //exit
                             userAskedToExit = true;
                             break;
@@ -131,6 +134,31 @@ namespace CSFLDraftCreator
                 _log.Error("Error running GetLeaguePositionSummary - " + e.Message);
             }
         }
+        private static void ConvertDraftJSONToCSV()
+        {
+            try
+            {
+                //get input from user
+                Console.WriteLine($"*** Just hit enter to use the defaults ***");
+
+                Console.WriteLine("Enter the location and filename of the Upcoming Draft JSON to import");
+                string upcomingDraftJson = GetUserInput_FileName("", true, _settings.UpcomingDraftJSON_InputFile);
+                Console.WriteLine();
+
+                Console.WriteLine("Enter the location and filename of the Upcoming Draft CSV file to output");
+                string outputFile = GetUserInput_FileName("", false, _settings.UpcomingDraftCSV_OutputFile);
+
+                CSFLDraftCreatorActivity util = new CSFLDraftCreatorActivity(_log, _settings);
+                util.ConvertDraftJSONToCSV(upcomingDraftJson, outputFile);
+
+
+
+            }
+            catch (Exception e)
+            {
+                _log.Error("Error running GetLeaguePositionSummary - " + e.Message);
+            }
+        }
         private static void GetLeaguePositionSummary()
         {
             try
@@ -169,7 +197,7 @@ namespace CSFLDraftCreator
         {
             try
             {
-                List<char> validOptions = new List<char> { 'x', '1', '2', '3', '4', '5' };
+                List<char> validOptions = new List<char> { 'x', '1', '2', '3', '4' };
                 bool userInputIsGood = true;
                 char userInput = 'x';
 
@@ -189,6 +217,7 @@ namespace CSFLDraftCreator
                     Console.WriteLine("*** Utilities ***");
                     Console.WriteLine(" [2] Get League Player Summary");
                     Console.WriteLine(" [3] Update draft export from csv");
+                    Console.WriteLine(" [4] Convert Draft export (JSON) from csv");
                     Console.WriteLine(" [x] Exit");
                     Console.WriteLine();
                     Console.Write("Choose option: ");
