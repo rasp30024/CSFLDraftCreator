@@ -783,16 +783,16 @@ namespace CSFLDraftCreator.BusLogic
                     return null;
                 }
 
-                //if (player.Pos == "QB")
-                //    Console.WriteLine("here");
+                if (player.Pos == "QB")
+                    Console.WriteLine("here");
 
                 //Go through each attribute and set a random value from min to max indexes
                 foreach (string attrToGet in attributes)
                 {
                     string attType = "unimporant";
 
-                    int minPosRating = 1;
-                    int maxPosRating = 99;
+                    int minPosRating = 0;
+                    int maxPosRating = 0;
 
                     if (skillModel.KeySkill.Contains(attrToGet.ToUpper()))
                     {
@@ -822,9 +822,23 @@ namespace CSFLDraftCreator.BusLogic
                         PropertyInfo maxPosProp = maxtype.GetProperty(attrToGet);
                         maxPosRating = (int)maxPosProp.GetValue(maxPosAttr, null);
                     }
+                    else //Unimportant so just randomize
+                    {
+                        //use reflexion to pull the property of the attribute to get (e.g. str, intel) for min number
+                        PlayerAttributesModel minPosAttr = posAttributes[0];
+                        Type mintype = minPosAttr.GetType();
+                        PropertyInfo minPosProp = mintype.GetProperty(attrToGet);
+                        minPosRating = (int)minPosProp.GetValue(minPosAttr, null);
+
+                        //use reflexion to pull the property of the attribute to get (e.g. str, intel) for max number
+                        PlayerAttributesModel maxPosAttr = posAttributes[19];
+                        Type maxtype = maxPosAttr.GetType();
+                        PropertyInfo maxPosProp = maxtype.GetProperty(attrToGet);
+                        maxPosRating = (int)maxPosProp.GetValue(maxPosAttr, null);
+                    }
 
 
-                    //Randomize he attribute
+                    //Randomize the attribute
                     int newAttrRating = _rnd.Next(minPosRating, maxPosRating);
 
                     //use reflexion to update our attribute object to send back by the method
@@ -835,23 +849,49 @@ namespace CSFLDraftCreator.BusLogic
                 }
 
                 //Work Ethic 
+                if (tierInfo.WE == 0)
+                    tierInfo.WE = 1;
                 if (tierInfo.WE >= 0)
                 {
                     player.Per.Wor = _rnd.Next(tierInfo.WE > 0 ? tierInfo.WE : 25, 99);
                 }
 
                 //Endurance
+                if (tierInfo.End == 0)
+                    tierInfo.End = 1;
                 if (tierInfo.End >= 0)
                 {
                     player.Attr.End = _rnd.Next(tierInfo.End > 0 ? tierInfo.WE : 25, 99);
                 }
 
                 //Skill
-                int skill = _rnd.Next(tierInfo.Skill > 0 ? tierInfo.Skill : 25, 99);
+                int minSkill = 1;
+                int maxSkill = 99;
+
+                if (tierInfo.Skill >= 0)
+                {
+                    minSkill = tierInfo.Skill;
+                    maxSkill = 105 - (40 - (keyMaxPer * 2));
+
+                    if (minSkill > maxSkill)
+                    {
+                        int temp = minSkill;
+                        minSkill = maxSkill;
+                        maxSkill = minSkill;
+                    }
+
+                    if (maxSkill >= 100)
+                        maxSkill = 99;
+
+                    if (minSkill <= 25)
+                        minSkill = 25;
+
+                }
+
+                int skill = _rnd.Next(minSkill, maxSkill);
                 Type playerSkillType = player.Skills.GetType();
                 PropertyInfo playerSkillProp = playerSkillType.GetProperty(player.Pos);
                 playerSkillProp.SetValue(player.Skills, Convert.ChangeType(skill, playerSkillProp.PropertyType), null);
-
 
                 return player;
             }
