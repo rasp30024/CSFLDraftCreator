@@ -783,8 +783,8 @@ namespace CSFLDraftCreator.BusLogic
                     return null;
                 }
 
-                if (player.Pos == "QB")
-                    Console.WriteLine("here");
+                //if (player.Pos == "QB")
+                //    Console.WriteLine("here");
 
                 //Go through each attribute and set a random value from min to max indexes
                 foreach (string attrToGet in attributes)
@@ -1049,7 +1049,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 TraitConverterService traitConverter = new TraitConverterService(_settings, playerCSV.Tier.ToLower(), posPercentileTiers);
 
-                if (tierInfo.AllowTag)
+                if (tierInfo.AllowTag || !string.IsNullOrEmpty(player.Trait))
                 {
                     List<string> traits = new List<string>();
                     if (string.IsNullOrEmpty(player.Trait))

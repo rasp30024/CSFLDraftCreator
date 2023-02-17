@@ -122,7 +122,7 @@ namespace CSFLDraftCreator.BusLogic
 
                 Type playerType = player.Attr.GetType();
                 PropertyInfo playerProp = playerType.GetProperty(attrToGet);
-                int currentAtt = (int)maxPosProp.GetValue(maxPosAttr, null);
+                int currentAtt = (int)playerProp.GetValue(player.Attr, null);
                 if (currentAtt < minPosRating)
                     playerProp.SetValue(player.Attr, Convert.ChangeType(newAttrRating, playerProp.PropertyType), null);
 
