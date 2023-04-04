@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,8 +24,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationVersion>2.0.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -99,19 +99,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusLogic\CSFLDraftCreatorActivity.cs" />
+    <Compile Include="BusLogic\Info.cs" />
     <Compile Include="BusLogic\TraitConverterService.cs" />
+    <Compile Include="Mapping\ToStringListConverter.cs" />
     <Compile Include="Models\AllPlayersModel.cs" />
-    <Compile Include="Models\AppSettingsModel.cs" />
+    <Compile Include="ConfigModels\AppSettingsModel.cs" />
+    <Compile Include="Models\AuditReporCSVModel.cs" />
     <Compile Include="Models\DraftClassInputModel.cs" />
+    <Compile Include="Models\MinMaxModel.cs" />
     <Compile Include="Models\PlayerAttributesModel.cs" />
     <Compile Include="Models\PlayerModel.cs" />
     <Compile Include="Models\PlayerPersonalitiesModel.cs" />
     <Compile Include="Models\PlayerSkillsModel.cs" />
     <Compile Include="Models\PositionTraitListModel.cs" />
-    <Compile Include="Models\PostionalSkillsModel.cs" />
+    <Compile Include="ConfigModels\PositionalAttributesModel.cs" />
+    <Compile Include="Models\PercentileChartModel.cs" />
     <Compile Include="Models\SearchPlayerExportCSVModel.cs" />
-    <Compile Include="Models\TierDefinitionModel.cs" />
+    <Compile Include="ConfigModels\StyleModel.cs" />
+    <Compile Include="ConfigModels\TierModel.cs" />
+    <Compile Include="ConfigModels\TraitModel.cs" />
     <Compile Include="Models\UpcomingDraftPlayerCSVModel.cs" />
+    <Compile Include="Models\WeightedListModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -121,6 +129,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="PositionalAttributes.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Styles.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Tiers.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Traits.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
@@ -133,6 +153,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ToDo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

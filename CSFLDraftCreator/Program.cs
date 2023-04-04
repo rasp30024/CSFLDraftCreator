@@ -1,10 +1,14 @@
 ﻿using CSFLDraftCreator.BusLogic;
+using CSFLDraftCreator.ConfigModels;
+using CSFLDraftCreator.Mapping;
 using CSFLDraftCreator.Models;
+using CsvHelper;
 using Newtonsoft.Json;
 using Serilog;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,6 +37,9 @@ namespace CSFLDraftCreator
                    .WriteTo.Console(outputTemplate: "{Message:lj}{NewLine}")
                    .WriteTo.File(_settings.AppLogLocation + "DraftNormalizer.log", rollingInterval: RollingInterval.Day)
                    .CreateLogger();
+
+                if (!ValidateSettings())
+                    ExitProgram();
 
                 //start menu loop for prompting user with actions to take
                 bool userAskedToExit = false;
@@ -87,10 +94,19 @@ namespace CSFLDraftCreator
                 //get input from user
                 Console.WriteLine($"*** Just hit enter to use the defaults ***");
 
-                Console.WriteLine("Enter the location and filename of the League's active player CSV export");
-                string activePlayersCSV_Location = GetUserInput_FileName("", true, _settings.ActivePlayerExportCSV_InputFile);
-                Console.WriteLine();
-
+                string activePlayersCSV_Location = String.Empty;
+                if (!_settings.UsePassedInPercentileChart)
+                {
+                    Console.WriteLine("Enter the location and filename of the League's active player CSV export");
+                    activePlayersCSV_Location = GetUserInput_FileName("", true, _settings.ActivePlayerExportCSV_InputFile);
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.WriteLine("Enter the location and filename of the Percentile Chart CSV export");
+                    activePlayersCSV_Location = GetUserInput_FileName("", true, _settings.PercentileChartCSV_InputFile);
+                    Console.WriteLine();
+                }
                 Console.WriteLine("Enter the location and filename of the Created Upcoming Draft CSV to import");
                 string draftClassCSV_Location = GetUserInput_FileName("", true, _settings.DraftClassCSV_InputFile);
                 Console.WriteLine();
@@ -256,6 +272,8 @@ namespace CSFLDraftCreator
         {
             try
             {
+
+
                 string settingsFile = File.ReadAllText("appsettings.json");
                 _settings = JsonConvert.DeserializeObject<AppSettingsModel>(settingsFile);
 
@@ -280,42 +298,68 @@ namespace CSFLDraftCreator
                 if (_settings.AppLogLocation.Substring(_settings.AppLogLocation.Length - 1, 1) != "\\")
                     _settings.AppLogLocation += "\\";
 
-                if (_settings.TierDefinitions == null)
-                    return false;
-
-                //We only have every 5 percentiles defined so we will make sure
-                //  the settings are rounded to the nearest 5 to match
-                foreach (var tier in _settings.TierDefinitions)
+                //Load Tier Definitions
+                if (!File.Exists("Tiers.csv"))
                 {
-                    tier.KeyMin = 5 * (int)Math.Round(tier.KeyMin / 5.0);
-                    tier.KeyMax = 5 * (int)Math.Round(tier.KeyMax / 5.0);
-                    tier.Skill = 5 * (int)Math.Round(tier.Skill / 5.0);
-                    tier.WE = 5 * (int)Math.Round(tier.WE / 5.0);
-
-                    //just to cover incorrect config
-                    if (tier.KeyMax < tier.KeyMin)
-                        tier.KeyMax = tier.KeyMin;
+                    Console.WriteLine("Failed to load the application, Cannot find Tiers.csv");
                 }
-                
-                //Sort our Tiers
-                _settings.TierDefinitions = _settings.TierDefinitions
-                    .OrderByDescending(o => o.Order)
-                    .ThenByDescending(o=> o.KeyMax)
-                    .ThenByDescending(o => o.KeyMin)
-                    .ToList();
-
-                //make sure we are uppercase on skills
-                foreach (PostionalSkillsModel skillModel in _settings.PostionalSkills)
+                using (var reader = new StreamReader("Tiers.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    for (int i = 0; i < skillModel.KeySkill.Count; i++)
-                    {
-                        skillModel.KeySkill[i] = skillModel.KeySkill[i].ToUpper();
-                    }
-                    
-                    for (int i = 0; i < skillModel.SecondarySkill.Count; i++)
-                    {
-                        skillModel.SecondarySkill[i] = skillModel.SecondarySkill[i].ToUpper();
-                    }
+                    _settings.TierDefinitions = csv.GetRecords<TierModel>().ToList();
+                }
+                if (_settings.TierDefinitions == null || _settings.TierDefinitions.Count == 0)
+                {
+                    _log.Error($"Tiers.csv has an invalid format");
+                    return false;
+                }
+
+                //Load Positional Attributes
+                if (!File.Exists("PositionalAttributes.csv"))
+                {
+                    Console.WriteLine("Failed to load the application, Cannot find PositionalAttributes.csv");
+                }
+                using (var reader = new StreamReader("PositionalAttributes.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    _settings.PositionalAttributes = csv.GetRecords<PositionalAttributesModel>().ToList();
+                }
+                if (_settings.PositionalAttributes == null || _settings.PositionalAttributes.Count == 0)
+                {
+                    _log.Error($"PositionalAttributes.csv has an invalid format");
+                    return false;
+                }
+
+                //Load Styles
+                if (!File.Exists("Styles.csv"))
+                {
+                    Console.WriteLine("Failed to load the application, Cannot find Styles.csv");
+                }
+                using (var reader = new StreamReader("Styles.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    _settings.Styles = csv.GetRecords<StyleModel>().ToList();
+                }
+                if (_settings.Styles == null || _settings.Styles.Count == 0)
+                {
+                    _log.Error($"Styles.csv has an invalid format");
+                    return false;
+                }
+
+                //Load Triats
+                if (!File.Exists("Traits.csv"))
+                {
+                    Console.WriteLine("Failed to load the application, Cannot find Traits.csv");
+                }
+                using (var reader = new StreamReader("Traits.csv"))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    _settings.Traits = csv.GetRecords<TraitModel>().ToList();
+                }
+                if (_settings.Traits == null || _settings.Traits.Count == 0)
+                {
+                    _log.Error($"Traits.csv has an invalid format");
+                    return false;
                 }
 
                 return true;
@@ -323,6 +367,239 @@ namespace CSFLDraftCreator
             catch (Exception e)
             {
                 Console.WriteLine("Error reading appsettings.json - " + e.Message);
+                return false;
+            }
+        }
+        private static bool ValidateSettings()
+        {
+            try
+            {
+
+                //Validate Tiers and update percentiles to 5% increments
+                foreach (TierModel tier in _settings.TierDefinitions)
+                {
+                    tier.KeyAttributeMin = tier.KeyAttributeMin < 1 ? 1 : tier.KeyAttributeMin;
+                    tier.KeyAttributeMax = tier.KeyAttributeMax > 100 ? 100 : tier.KeyAttributeMax;
+
+                    tier.PriAttributeMin = tier.PriAttributeMin < 1 ? 1 : tier.PriAttributeMin;
+                    tier.PriAttributeMax = tier.PriAttributeMax > 100 ? 100 : tier.PriAttributeMax;
+
+                    tier.SecAttributeMin = tier.SecAttributeMin < 1 ? 1 : tier.SecAttributeMin;
+                    tier.SecAttributeMax = tier.SecAttributeMax > 100 ? 100 : tier.SecAttributeMax;
+
+                    tier.SkillMin = tier.SkillMin < 1 ? 1 : tier.SkillMin;
+                    tier.SkillMax = tier.SkillMax > 100 ? 100 : tier.SkillMax;
+
+                    if (tier.KeyAttributeMin > tier.KeyAttributeMax)
+                    {
+                        _log.Error($"Tier {tier.TierName} - KeyMin({tier.KeyAttributeMin}) cannot be larger than KeyMax({tier.KeyAttributeMax})");
+                        return false;
+                    }
+
+                    if (tier.PriAttributeMin > tier.PriAttributeMax)
+                    {
+                        _log.Error($"Tier {tier.TierName} - PriMin({tier.PriAttributeMin}) cannot be larger than PriMax({tier.PriAttributeMax})");
+                        return false;
+                    }
+
+                    if (tier.SecAttributeMin > tier.SecAttributeMax)
+                    {
+                        _log.Error($"Tier {tier.TierName} - SecMin({tier.SecAttributeMin}) cannot be larger than SecMax({tier.SecAttributeMax})");
+                        return false;
+                    }
+
+                    //We only have every 5 percentiles defined so we will make sure
+                    //  the settings are rounded to the nearest 5 to match
+                    tier.KeyAttributeMin = 5 * (int)Math.Round(tier.KeyAttributeMin / 5.0);
+                    tier.KeyAttributeMax = 5 * (int)Math.Round(tier.KeyAttributeMax / 5.0);
+                    tier.PriAttributeMin = 5 * (int)Math.Round(tier.PriAttributeMin / 5.0);
+                    tier.PriAttributeMax = 5 * (int)Math.Round(tier.PriAttributeMax / 5.0);
+                    tier.SecAttributeMin = 5 * (int)Math.Round(tier.SecAttributeMin / 5.0);
+                    tier.SecAttributeMax = 5 * (int)Math.Round(tier.SecAttributeMax / 5.0);
+                }
+
+                //Sort our Tiers
+                _settings.TierDefinitions = _settings.TierDefinitions
+                    .OrderBy(o => o.Order)
+                    .ThenByDescending(o => o.KeyAttributeMax)
+                    .ThenByDescending(o => o.KeyAttributeMin)
+                    .ThenByDescending(o => o.PriAttributeMax)
+                    .ThenByDescending(o => o.PriAttributeMin)
+                    .ThenByDescending(o => o.SecAttributeMax)
+                    .ThenByDescending(o => o.SecAttributeMin)
+                    .ToList();
+
+                //Validate and mark Attributes as Uppercase inside PostionalAttributes
+                foreach (PositionalAttributesModel attributeModel in _settings.PositionalAttributes)
+                {
+                    for (int i = 0; i < attributeModel.PrimaryAttributes.Count; i++)
+                    {
+                        attributeModel.PrimaryAttributes[i] = attributeModel.PrimaryAttributes[i].ToUpper();
+                        if (!Info.AttributeList.Contains(attributeModel.PrimaryAttributes[i]))
+                        {
+                            _log.Error($"PostionalAttributes for {attributeModel.PositionName} has an invalid PrimaryAttribute ({attributeModel.PrimaryAttributes[i]})");
+                            return false;
+                        }
+                    }
+
+                    for (int i = 0; i < attributeModel.SecondaryAttributes.Count; i++)
+                    {
+                        attributeModel.SecondaryAttributes[i] = attributeModel.SecondaryAttributes[i].ToUpper();
+                        if (!Info.AttributeList.Contains(attributeModel.SecondaryAttributes[i]))
+                        {
+                            _log.Error($"PostionalAttributes for {attributeModel.PositionName} has an invalid SecondaryAttribute ({attributeModel.SecondaryAttributes[i]})");
+                            return false;
+                        }
+                    }
+                }
+
+                //valdiate styles
+                foreach (StyleModel styleModel in _settings.Styles)
+                {
+                    if (!Info.PositionList.Contains(styleModel.ApplyToPosition))
+                    {
+                        _log.Error($"Style {styleModel.StyleName} has an invalid ApplyToPosition value ({styleModel.ApplyToPosition})");
+                        return false;
+
+                    }
+
+                    if (styleModel.KeyAttributes.Count > 0 && styleModel.KeyAttributes[0].ToLower() == "none")
+                        styleModel.KeyAttributes.Clear();
+
+                    for (int i = 0; i < styleModel.KeyAttributes.Count; i++)
+                    {
+                        styleModel.KeyAttributes[i] = styleModel.KeyAttributes[i].ToUpper();
+                        if (!Info.AttributeList.Contains(styleModel.KeyAttributes[i]))
+                        {
+                            _log.Error($"Style {styleModel.StyleName} has an invalid KeyAttribute ({styleModel.KeyAttributes[i]})");
+                            return false;
+                        }
+                    }
+                    
+
+                    if (styleModel.EnhancePersonality.Count > 0 && styleModel.EnhancePersonality[0].ToLower() == "none")
+                        styleModel.EnhancePersonality.Clear();
+
+                    for (int i = 0; i < styleModel.EnhancePersonality.Count; i++)
+                    {
+                        if (!Info.PersonalityList.Contains(styleModel.EnhancePersonality[i].ToUpper()))
+                        {
+                            _log.Error($"Style {styleModel.StyleName} has an invalid EnhancePersonality ({styleModel.EnhancePersonality[i]})");
+                            return false;
+                        }
+                    }
+
+
+                    if (styleModel.MufflePersonality.Count > 0 && styleModel.MufflePersonality[0].ToLower() == "none")
+                        styleModel.MufflePersonality.Clear();
+
+                    for (int i = 0; i < styleModel.MufflePersonality.Count; i++)
+                    {
+                        if (!Info.PersonalityList.Contains(styleModel.MufflePersonality[i]))
+                        {
+                            _log.Error($"Style {styleModel.StyleName} has an invalid MuffledPersonality ({styleModel.MufflePersonality[i]})");
+                            return false;
+                        }
+                    }
+                    
+
+                    if (styleModel.AllowedPosTraits.Count > 0 && styleModel.AllowedPosTraits[0].ToLower() == "any")
+                        styleModel.AllowedPosTraits.Clear();
+                    
+                    for (int i = 0; i < styleModel.AllowedPosTraits.Count; i++)
+                    {
+                        if (!Info.TraitList.Contains(styleModel.AllowedPosTraits[i]))
+                        {
+                            _log.Error($"Style {styleModel.StyleName} has an invalid Trait ({styleModel.AllowedPosTraits[i]})");
+                            return false;
+                        }
+                    }
+
+                }
+
+                //validation for traits
+                foreach (var trait in _settings.Traits)
+                {
+                    if (trait.Type.ToLower() != "personality" && trait.Type.ToLower() != "position")
+                    {
+                        _log.Error($"Style {trait.TraitName} has an invalid Typle ({trait.Type}).  This should be either personality or position.");
+                        return false;
+                    }
+
+                    if (trait.AllowedPositions == null || trait.AllowedPositions.Count == 0 || trait.AllowedPositions[0].ToLower() == "any")
+                        trait.AllowedPositions = new List<string>();
+
+                    for (int index = 0; index < trait.AllowedPositions.Count; index++)
+                    {
+                        if (!Info.PositionList.Contains(trait.AllowedPositions[index].ToUpper()))
+                        {
+                            _log.Error($"Trait {trait.TraitName} has an invalid position({trait.AllowedPositions[index]}) defined in AllowedPosition");
+                            return false;
+                        }
+                        trait.AllowedPositions[index] = trait.AllowedPositions[index].ToUpper();
+                    }
+
+                    if (string.IsNullOrEmpty(trait.GameTraitName) || !Info.TraitList.Contains(trait.GameTraitName))
+                    {
+                        _log.Error($"Style {trait.TraitName} has an invalid GameTraitName ({trait.GameTraitName}).");
+                        return false;
+                    }
+
+                    if (trait.EnhanceAttributes == null || trait.EnhanceAttributes.Count == 0 || trait.EnhanceAttributes[0].ToLower() == "none")
+                        trait.EnhanceAttributes = new List<string>();
+
+                    foreach (var enhancedAtt in trait.EnhanceAttributes)
+                    {
+                        if (!Info.AttributeList.Contains(enhancedAtt.ToUpper()))
+                        {
+                            _log.Error($"Trait {trait.TraitName} has an invalid EnhanceAttribute({enhancedAtt})");
+                            return false;
+                        }
+                    }
+
+                    if (trait.MuffleAttributes == null || trait.MuffleAttributes.Count == 0 || trait.MuffleAttributes[0].ToLower() == "none")
+                        trait.MuffleAttributes = new List<string>();
+
+                    foreach (var muffleAtt in trait.MuffleAttributes)
+                    {
+                        if (!Info.AttributeList.Contains(muffleAtt.ToUpper()))
+                        {
+                            _log.Error($"Trait {trait.TraitName} has an invalid MuffleAttribute({muffleAtt})");
+                            return false;
+                        }
+                    }
+
+                    if (trait.EnhancePersonailities == null || trait.EnhancePersonailities.Count == 0 || trait.EnhancePersonailities[0].ToLower() == "none")
+                        trait.EnhancePersonailities = new List<string>();
+
+                    foreach (var enhancePer in trait.EnhancePersonailities)
+                    {
+                        if (!Info.PersonalityList.Contains(enhancePer.ToUpper()))
+                        {
+                            _log.Error($"Trait {trait.TraitName} has an invalid EnahancePersonality({enhancePer})");
+                            return false;
+                        }
+                    }
+
+
+                    if (trait.MufflePersonalities == null || trait.MufflePersonalities.Count == 0 || trait.MufflePersonalities[0].ToLower() == "none")
+                        trait.MufflePersonalities = new List<string>();
+
+                    foreach (var mufflePer in trait.MufflePersonalities)
+                    {
+                        if (!Info.PersonalityList.Contains(mufflePer.ToUpper()))
+                        {
+                            _log.Error($"Trait {trait.TraitName} has an invalid MufflePersonality({mufflePer})");
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _log.Error("ValidateSettings - " + e.Message);
                 return false;
             }
         }

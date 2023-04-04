@@ -1,4 +1,5 @@
-﻿using CSFLDraftCreator.Models;
+﻿using CSFLDraftCreator.ConfigModels;
+using CSFLDraftCreator.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace CSFLDraftCreator.BusLogic
     internal class TraitConverterService
     {
         private Random _rnd = new Random(Guid.NewGuid().GetHashCode());
-        private TierDefinitionModel _tierInfo = null;
+        private TierModel _tierInfo = null;
         private Dictionary<string, List<PlayerAttributesModel>> _posPercentileTiers = null;
         private AppSettingsModel _settings;
         private List<string> _attributes = new List<string> { "Str", "Agi", "Arm", "Spe", "Han", "Intel", "Acc", "PBl", "RBl", "Tck", "KDi", "KAc", "End" };
@@ -19,86 +20,16 @@ namespace CSFLDraftCreator.BusLogic
         {
             _posPercentileTiers = posPercentileTiers;
             _settings = settings;
-            _tierInfo = _settings.TierDefinitions.Where(t => t.Id.ToLower() == tier.ToLower()).FirstOrDefault();
+            _tierInfo = _settings.TierDefinitions.Where(t => t.TierName.ToLower() == tier.ToLower()).FirstOrDefault();
             if (_tierInfo == null)
             {
                 new NullReferenceException("tier names in csv does not match tier id in settings");
             }
         }
-
-        public string GetPositionalTrait(string pos, List<string> existingTraits)
-        {
-
-            Dictionary<string, List<string>> traitsByPosition = new Dictionary<string, List<string>>();
-            traitsByPosition.Add("QB", _settings.PosTraits.QB);
-            traitsByPosition.Add("RB", _settings.PosTraits.RB);
-            traitsByPosition.Add("FB", _settings.PosTraits.FB);
-            traitsByPosition.Add("C", _settings.PosTraits.C);
-            traitsByPosition.Add("G", _settings.PosTraits.G);
-            traitsByPosition.Add("T", _settings.PosTraits.T);
-            traitsByPosition.Add("TE", _settings.PosTraits.TE);
-            traitsByPosition.Add("WR", _settings.PosTraits.WR);
-            traitsByPosition.Add("CB", _settings.PosTraits.CB);
-            traitsByPosition.Add("LB", _settings.PosTraits.LB);
-            traitsByPosition.Add("DE", _settings.PosTraits.DE);
-            traitsByPosition.Add("DT", _settings.PosTraits.DT);
-            traitsByPosition.Add("FS", _settings.PosTraits.FS);
-            traitsByPosition.Add("SS", _settings.PosTraits.SS);
-            traitsByPosition.Add("K", _settings.PosTraits.K);
-            traitsByPosition.Add("P", _settings.PosTraits.P);
-
-
-            int count = 0; //used as to make sure we don't get stuck trying to find a match
-            bool keepLooking = true;
-            string traitName = ""; 
-            do 
-            {
-                _rnd = new Random(Guid.NewGuid().GetHashCode());
-                List<string> traits = traitsByPosition[pos];
-                Shuffle<string>(traits);
-                int indexToGet = _rnd.Next(0, traits.Count - 1);
-
-                if (!existingTraits.Contains(traits[indexToGet]))  //make sure this is not a duplicate
-                {
-                    traitName = traits[indexToGet];
-                    keepLooking = false;
-                }
-
-                count++;
-            } while (!keepLooking && count < 20);
-
-            return traitName;
-
-        }
-        public string GetPersonalityTrait(List<string> existingTraits)
-        {
-
-            int count = 0; //used as to make sure we don't get stuck trying to find a match
-            bool keepLooking = true;
-            string traitName = "";
-            do
-            {
-                _rnd = new Random(Guid.NewGuid().GetHashCode());
-                List<string> traits = _settings.PosTraits.Personality;
-                Shuffle<string>(traits);
-                int indexToGet = _rnd.Next(0, traits.Count - 1);
-
-                if (!existingTraits.Contains(traits[indexToGet]))  //make sure this is not a duplicate
-                {
-                    traitName = traits[indexToGet];
-                    keepLooking = false;
-                }
-
-                count++;
-            } while (!keepLooking && count < 20);
-
-            return traitName;
-        }
-
         private PlayerModel UpdateCriticalValues(List<string> attributes, PlayerModel player)
         {
-            int minPer = _tierInfo.KeyMin / 5;
-            int maxPer = _tierInfo.KeyMax / 5;
+            int minPer = _tierInfo.KeyAttributeMin / 5;
+            int maxPer = _tierInfo.KeyAttributeMax / 5;
 
             List<PlayerAttributesModel> posAttributes = _posPercentileTiers[player.Pos];
 

@@ -17,6 +17,7 @@ namespace CSFLDraftCreator.Models
         public int Weight { get; set; } = 0;
         public string Tier { get; set; } = string.Empty;
         public string Trait { get; set; } = string.Empty;
+        public string Style { get; set; } = string.Empty;
 
 
 
