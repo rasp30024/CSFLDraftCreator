@@ -1627,7 +1627,30 @@ namespace CSFLDraftCreator.BusLogic
                     if (roll <= _settings.PerTraitPercentage || addPersonalityTrait)
                     {
                         List<WeightedListModel> packageList = allPerTraits.Select(s => new WeightedListModel { Weight = s.RandomWeight, Item = s.GameTraitName }).ToList();
-                        string perTrait = SelectFromWeightedList(packageList);
+                        bool traitFound = tier.AllowNegativeTrait;
+                        string perTrait = String.Empty;
+                        int retryCount = 0;
+                        do
+                        {
+                            perTrait = SelectFromWeightedList(packageList);
+                            if (!traitFound)
+                            {
+                                TraitModel checkTrait = allPerTraits.Where(t => t.TraitName == perTrait).FirstOrDefault();
+                                if (checkTrait != null && !checkTrait.NegativeTrait)
+                                {
+                                    traitFound = true;
+                                }
+                                else
+                                {
+                                    perTrait = String.Empty;
+                                }
+                            }
+                            retryCount++;
+                        } while (retryCount < 100 && !traitFound);
+
+                        //if (retryCount > 50)
+                        //    Console.WriteLine("Debug");
+                        
 
                         if (string.IsNullOrEmpty(perTrait))
                         {

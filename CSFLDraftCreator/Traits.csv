@@ -1,52 +1,52 @@
-﻿TraitName,RandomWeight,Type,AllowedPositions,GameTraitName,EnhanceAttributes,MuffleAttributes,EnhancePersonailities,MufflePersonalities
-AllPurposeRB,1,position,RB,AllPurposeRB,none,none,none,none
-AthBlocker,1,position,"FB, TE, C, G, T",AthBlocker,none,none,none,none
-Athlete,1,personality,any,Athlete,"Str, Agi, Spe, Intel, End",none,none,none
-BadInfluence,1,personality,any,BadInfluence,none,none,none,none
-BlockingFB,1,position,FB,BlockingFB,none,none,none,none
-BlockingTE,1,position,TE,BlockingTE,none,none,none,none
-BookEndTackle,1,position,T,BookEndTackle,none,none,Com,none
-BoxSafety,1,position,"SS, FS",BoxSafety,none,none,none,none
-BullRusher,1,position,"DT, DE",BullRusher,none,none,Com,none
-Centerfielder,1,position,"SS, FS",Centerfielder,none,none,none,none
-ClutchKicker,1,position,"K, P",ClutchKicker,none,none,"TmPl, Com, Soc",none
-ClutchQB,1,position,QB,ClutchQB,none,none,"TmPl, Com, Soc",none
-CommunityBenefactor,1,personality,any,CommunityBenefactor,none,none,none,none
-Competitor,1,personality,any,Competitor,none,none,Com,none
-ConsummatePro,1,personality,any,ConsummatePro,none,none,"Lea, Wor, Com, TmPl, Spor, Soc, Mor, Loy",none
-CoverageLB,1,position,LB,CoverageLB,none,none,none,none
-DeepThreat,1,position,WR,DeepThreat,none,none,none,none
-Distraction,1,personality,any,Distraction,none,none,none,none
-Diva,1,personality,any,Diva,none,none,"Mny, Mkt, PT, Win","TmPl, Loy, Spor"
-Dualthreat,1,position,QB,Dualthreat,none,none,none,none
-FanFavorite,1,personality,any,FanFavorite,none,none,"Wor, TmPl, Spor, Loy",none
-FilmGeek,1,personality,any,FilmGeek,Intel,none,none,none
-GameManager,1,position,QB,GameManager,none,none,Lea,none
-Gunslinger,1,position,QB,Gunslinger,none,none,none,none
-HybridLB,1,position,LB,HybridLB,none,none,none,none
-InjuryProne,1,personality,any,InjuryProne,none,none,none,none
-Journeyman,1,personality,any,Journeyman,none,none,none,Loy
-LockerLeader,1,personality,any,LockerLeader,none,none,Lea,none
-MediaDarling,1,personality,any,MediaDarling,none,none,none,none
-NoseTackle,1,position,DT,NoseTackle,none,none,none,none
-Perceptive,1,personality,any,Perceptive,Intel,none,none,none
-PossessionWR,1,position,WR,PossessionWR,none,none,none,none
-PowerKicker,1,position,"K, P",PowerKicker,none,none,none,none
-PowerRunner,1,position,RB,PowerRunner,none,none,none,none
-PressCorner,1,position,CB,PressCorner,none,none,none,none
-ProBloodline,1,personality,any,ProBloodline,"Str, Agi, Spe, Intel, End",none,Com,none
-RawTalent,1,personality,any,RawTalent,"Str, Agi, Spe, Intel",none,none,none
-ReceiveFB,1,position,FB,ReceiveFB,none,none,none,none
-ReceivingTE,1,position,TE,ReceivingTE,none,none,none,none
-RoleModel,1,personality,any,RoleModel,none,none,"Lea, Wor, TmPl, Spor, Soc, Mor",none
-RunningQB,1,position,QB,RunningQB,none,none,none,none
-ScatBack,1,position,RB,ScatBack,none,none,none,none
-ShutDownCorner,1,position,CB,ShutDownCorner,none,none,Com,none
-SlotCorner,1,position,CB,SlotCorner,none,none,none,none
-SlotReceiver,1,position,WR,SlotReceiver,none,none,none,none
-SpeedRusher,1,position,"DT, DE",SpeedRusher,none,none,Com,none
-TeamPlayer,1,personality,any,TeamPlayer,none,none,"TmPl, Loy",Mny
-TenaciousBlocker,1,position,"FB, TE, C, G, T",TenaciousBlocker,none,none,none,none
-Thumper,1,position,LB,Thumper,none,none,none,none
-WorkoutFanatic,1,personality,any,WorkoutFanatic,none,none,Wor,none
-ZoneCorner,1,position,CB,ZoneCorner,none,none,none,none
+﻿TraitName,RandomWeight,Type,AllowedPositions,GameTraitName,EnhanceAttributes,MuffleAttributes,EnhancePersonailities,MufflePersonalities,NegativeTrait
+AllPurposeRB,1,position,RB,AllPurposeRB,none,none,none,none,FALSE
+AthBlocker,1,position,"FB, TE, C, G, T",AthBlocker,none,none,none,none,FALSE
+Athlete,1,personality,any,Athlete,"Str, Agi, Spe, Intel, End",none,none,none,FALSE
+BadInfluence,1,personality,any,BadInfluence,none,none,none,none,TRUE
+BlockingFB,1,position,FB,BlockingFB,none,none,none,none,FALSE
+BlockingTE,1,position,TE,BlockingTE,none,none,none,none,FALSE
+BookEndTackle,1,position,T,BookEndTackle,none,none,Com,none,FALSE
+BoxSafety,1,position,"SS, FS",BoxSafety,none,none,none,none,FALSE
+BullRusher,1,position,"DT, DE",BullRusher,none,none,Com,none,FALSE
+Centerfielder,1,position,"SS, FS",Centerfielder,none,none,none,none,FALSE
+ClutchKicker,1,position,"K, P",ClutchKicker,none,none,"TmPl, Com, Soc",none,FALSE
+ClutchQB,1,position,QB,ClutchQB,none,none,"TmPl, Com, Soc",none,FALSE
+CommunityBenefactor,1,personality,any,CommunityBenefactor,none,none,none,none,FALSE
+Competitor,1,personality,any,Competitor,none,none,Com,none,FALSE
+ConsummatePro,1,personality,any,ConsummatePro,none,none,"Lea, Wor, Com, TmPl, Spor, Soc, Mor, Loy",none,FALSE
+CoverageLB,1,position,LB,CoverageLB,none,none,none,none,FALSE
+DeepThreat,1,position,WR,DeepThreat,none,none,none,none,FALSE
+Distraction,1,personality,any,Distraction,none,none,none,none,TRUE
+Diva,1,personality,any,Diva,none,none,"Mny, Mkt, PT, Win","TmPl, Loy, Spor",TRUE
+Dualthreat,1,position,QB,Dualthreat,none,none,none,none,FALSE
+FanFavorite,1,personality,any,FanFavorite,none,none,"Wor, TmPl, Spor, Loy",none,FALSE
+FilmGeek,1,personality,any,FilmGeek,Intel,none,none,none,FALSE
+GameManager,1,position,QB,GameManager,none,none,Lea,none,FALSE
+Gunslinger,1,position,QB,Gunslinger,none,none,none,none,FALSE
+HybridLB,1,position,LB,HybridLB,none,none,none,none,FALSE
+InjuryProne,1,personality,any,InjuryProne,none,none,none,none,TRUE
+Journeyman,1,personality,any,Journeyman,none,none,none,Loy,FALSE
+LockerLeader,1,personality,any,LockerLeader,none,none,Lea,none,FALSE
+MediaDarling,1,personality,any,MediaDarling,none,none,none,none,FALSE
+NoseTackle,1,position,DT,NoseTackle,none,none,none,none,FALSE
+Perceptive,1,personality,any,Perceptive,Intel,none,none,none,FALSE
+PossessionWR,1,position,WR,PossessionWR,none,none,none,none,FALSE
+PowerKicker,1,position,"K, P",PowerKicker,none,none,none,none,FALSE
+PowerRunner,1,position,RB,PowerRunner,none,none,none,none,FALSE
+PressCorner,1,position,CB,PressCorner,none,none,none,none,FALSE
+ProBloodline,1,personality,any,ProBloodline,"Str, Agi, Spe, Intel, End",none,Com,none,FALSE
+RawTalent,1,personality,any,RawTalent,"Str, Agi, Spe, Intel",none,none,none,FALSE
+ReceiveFB,1,position,FB,ReceiveFB,none,none,none,none,FALSE
+ReceivingTE,1,position,TE,ReceivingTE,none,none,none,none,FALSE
+RoleModel,1,personality,any,RoleModel,none,none,"Lea, Wor, TmPl, Spor, Soc, Mor",none,FALSE
+RunningQB,1,position,QB,RunningQB,none,none,none,none,FALSE
+ScatBack,1,position,RB,ScatBack,none,none,none,none,FALSE
+ShutDownCorner,1,position,CB,ShutDownCorner,none,none,Com,none,FALSE
+SlotCorner,1,position,CB,SlotCorner,none,none,none,none,FALSE
+SlotReceiver,1,position,WR,SlotReceiver,none,none,none,none,FALSE
+SpeedRusher,1,position,"DT, DE, LB",SpeedRusher,none,none,Com,none,FALSE
+TeamPlayer,1,personality,any,TeamPlayer,none,none,"TmPl, Loy",Mny,FALSE
+TenaciousBlocker,1,position,"FB, TE, C, G, T",TenaciousBlocker,none,none,none,none,FALSE
+Thumper,1,position,LB,Thumper,none,none,none,none,FALSE
+WorkoutFanatic,1,personality,any,WorkoutFanatic,none,none,Wor,none,FALSE
+ZoneCorner,1,position,CB,ZoneCorner,none,none,none,none,FALSE

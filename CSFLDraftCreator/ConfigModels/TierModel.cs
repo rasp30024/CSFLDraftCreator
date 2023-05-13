@@ -54,5 +54,9 @@ namespace CSFLDraftCreator.ConfigModels
         [Name("AllowPersonalityRandomTag")]
         public bool AllowPersonalityTag { get; set; }
 
+        [Name("AllowNegativeTrait")]
+        public bool AllowNegativeTrait { get; set; } = false;
+
+
     }
 }

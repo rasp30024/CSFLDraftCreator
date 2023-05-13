@@ -42,6 +42,9 @@ namespace CSFLDraftCreator.ConfigModels
         [TypeConverter(typeof(ToStringListConverter))]
         public List<string> MufflePersonalities { get; set; }
 
+        [Name("NegativeTrait")]
+        public bool NegativeTrait { get; set; } = false;
+
     }
 }
 
