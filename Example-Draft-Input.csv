@@ -1,0 +1,41 @@
+num,FirstName,LastName,College,Age,Height,Weight,Position,Tier,Trait,Style
+1,RB-Generic,Legend,,0,0,0,RB,Legend,,RB-Generic
+2,RB-Generic,Hall of Famer,,0,0,0,RB,Hall of Famer,,RB-Generic
+3,RB-Generic,Super Star,,0,0,0,RB,Super Star,,RB-Generic
+4,RB-Generic,Solid Starter,,0,0,0,RB,Solid Starter,,RB-Generic
+5,RB-Generic,Starter,,0,0,0,RB,Starter,,RB-Generic
+6,RB-Generic,Rotation,,0,0,0,RB,Rotation,,RB-Generic
+7,RB-Generic,Backup,,0,0,0,RB,Backup,,RB-Generic
+8,RB-Generic,Bench,,0,0,0,RB,Bench,,RB-Generic
+1,RB-Elusive,Legend,,0,0,0,RB,Legend,,RB-Elusive
+2,RB-Elusive,Hall of Famer,,0,0,0,RB,Hall of Famer,,RB-Elusive
+3,RB-Elusive,Super Star,,0,0,0,RB,Super Star,,RB-Elusive
+4,RB-Elusive,Solid Starter,,0,0,0,RB,Solid Starter,,RB-Elusive
+5,RB-Elusive,Starter,,0,0,0,RB,Starter,,RB-Elusive
+6,RB-Elusive,Rotation,,0,0,0,RB,Rotation,,RB-Elusive
+7,RB-Elusive,Backup,,0,0,0,RB,Backup,,RB-Elusive
+8,RB-Elusive,Bench,,0,0,0,RB,Bench,,RB-Elusive
+1,RB-Power,Legend,,0,0,0,RB,Legend,,RB-Power
+2,RB-Power,Hall of Famer,,0,0,0,RB,Hall of Famer,,RB-Power
+3,RB-Power,Super Star,,0,0,0,RB,Super Star,,RB-Power
+4,RB-Power,Solid Starter,,0,0,0,RB,Solid Starter,,RB-Power
+5,RB-Power,Starter,,0,0,0,RB,Starter,,RB-Power
+6,RB-Power,Rotation,,0,0,0,RB,Rotation,,RB-Power
+7,RB-Power,Backup,,0,0,0,RB,Backup,,RB-Power
+8,RB-Power,Bench,,0,0,0,RB,Bench,,RB-Power
+1,RB-Receiving,Legend,,0,0,0,RB,Legend,,RB-Receiving
+2,RB-Receiving,Hall of Famer,,0,0,0,RB,Hall of Famer,,RB-Receiving
+3,RB-Receiving,Super Star,,0,0,0,RB,Super Star,,RB-Receiving
+4,RB-Receiving,Solid Starter,,0,0,0,RB,Solid Starter,,RB-Receiving
+5,RB-Receiving,Starter,,0,0,0,RB,Starter,,RB-Receiving
+6,RB-Receiving,Rotation,,0,0,0,RB,Rotation,,RB-Receiving
+7,RB-Receiving,Backup,,0,0,0,RB,Backup,,RB-Receiving
+8,RB-Receiving,Bench,,0,0,0,RB,Bench,,RB-Receiving
+1,RB-Blocking,Legend,,0,0,0,RB,Legend,,RB-Blocking
+2,RB-Blocking,Hall of Famer,,0,0,0,RB,Hall of Famer,,RB-Blocking
+3,RB-Blocking,Super Star,,0,0,0,RB,Super Star,,RB-Blocking
+4,RB-Blocking,Solid Starter,,0,0,0,RB,Solid Starter,,RB-Blocking
+5,RB-Blocking,Starter,,0,0,0,RB,Starter,,RB-Blocking
+6,RB-Blocking,Rotation,,0,0,0,RB,Rotation,,RB-Blocking
+7,RB-Blocking,Backup,,0,0,0,RB,Backup,,RB-Blocking
+8,RB-Blocking,Bench,,0,0,0,RB,Bench,,RB-Blocking
