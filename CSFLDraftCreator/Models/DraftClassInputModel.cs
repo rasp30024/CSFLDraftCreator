@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CsvHelper.Configuration.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace CSFLDraftCreator.Models
         public string LastName { get; set; } = string.Empty;
         public string College { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
+        [Optional]
         public int Age { get; set; } = 0;
         public string Height { get; set; } = string.Empty;
         public int Weight { get; set; } = 0;

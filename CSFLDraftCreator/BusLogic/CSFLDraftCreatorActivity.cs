@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CSFLDraftCreator.BusLogic
@@ -118,8 +119,8 @@ namespace CSFLDraftCreator.BusLogic
 
                     //Copy Base info from draft list csv to new draft record
                     PlayerModel drafteeExport = new PlayerModel();
-                    drafteeExport.First = draftee.FirstName;
-                    drafteeExport.Last = draftee.LastName;
+                    drafteeExport.First = CleanName(draftee.FirstName);
+                    drafteeExport.Last = CleanName(draftee.LastName);
                     drafteeExport.Pos = GetPosition(draftee.Position);
                     drafteeExport.Age = draftee.Age;
                     drafteeExport.Hgt = height;
@@ -161,8 +162,8 @@ namespace CSFLDraftCreator.BusLogic
                     drafteeExport = FixBlankInfo(drafteeExport);
 
                     drafteeExport.Per = RandomizePersonality();
-                    drafteeExport.Skills = RandomizeSecondarySkills(draftee.Position);
                     drafteeExport = RandomizeAttributes(drafteeExport, draftee.Tier, draftee.Style, posPercentileTiers);
+                    drafteeExport.Skills = RandomizeSecondarySkills(draftee.Position, drafteeExport.Skills);
 
                     if (drafteeExport == null || drafteeExport.Per == null || drafteeExport.Attr == null || drafteeExport.Attr == null)
                     {
@@ -1888,15 +1889,12 @@ namespace CSFLDraftCreator.BusLogic
                 return null;
             }
         }
-        private PlayerSkillsModel RandomizeSecondarySkills(string pos)
+        private PlayerSkillsModel RandomizeSecondarySkills(string pos, PlayerSkillsModel skills)
         {
             try
             {
-                PlayerSkillsModel skills = new PlayerSkillsModel();
-
                 int chanceForSecondSkill = _rnd.Next(1, 101); //rolls to set the skill
                 int chanceForThirdSkill = _rnd.Next(1, 101);
-
 
                 switch (pos)
                 {
@@ -1907,80 +1905,175 @@ namespace CSFLDraftCreator.BusLogic
                             skills.FB = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.WR = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.FB >= skills.RB)
+                            skills.FB = skills.RB - 5;
+                        
+                        if (skills.WR >= skills.RB)
+                            skills.WR = skills.RB - 5;
+
                         break;
                     case "FB":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.RB = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+                        if (chanceForThirdSkill <= _settings.SecondarySkillChance)
+                            skills.TE = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.RB >= skills.FB)
+                            skills.RB = skills.FB - 5;
+
+                        if (skills.TE >= skills.FB)
+                            skills.TE = skills.FB - 5;
+
                         break;
                     case "G":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.T = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.C = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.T >= skills.G)
+                            skills.T = skills.G - 5;
+
+                        if (skills.C >= skills.G)
+                            skills.C = skills.G - 5;
+
                         break;
                     case "T":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.G = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.C = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.G >= skills.T)
+                            skills.G = skills.T - 5;
+
+                        if (skills.C >= skills.T)
+                            skills.C = skills.T - 5;
+
                         break;
                     case "C":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.T = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.G = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.G >= skills.C)
+                            skills.G = skills.C - 5;
+
+                        if (skills.T >= skills.C)
+                            skills.T = skills.C - 5;
+
                         break;
                     case "TE":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.WR = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.WR >= skills.TE)
+                            skills.WR = skills.TE - 5;
+
                         break;
                     case "WR":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.TE = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.RB = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.TE >= skills.WR)
+                            skills.TE = skills.WR - 5;
+
+                        if (skills.RB >= skills.WR)
+                            skills.RB = skills.WR - 5;
+
                         break;
                     case "CB":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.FS = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.SS = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.FS >= skills.CB)
+                            skills.FS = skills.CB - 5;
+
+                        if (skills.SS >= skills.CB)
+                            skills.SS = skills.CB - 5;
+
                         break;
                     case "LB":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.SS = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.DE = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.SS >= skills.LB)
+                            skills.SS = skills.LB - 5;
+
+                        if (skills.DE >= skills.LB)
+                            skills.DE = skills.LB - 5;
+
                         break;
                     case "DT":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.DE = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.DE >= skills.DT)
+                            skills.DE = skills.DT - 5;
+
                         break;
                     case "DE":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.DT = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.LB = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.DT >= skills.DE)
+                            skills.DT = skills.DE - 5;
+                        
+                        if (skills.LB >= skills.DE)
+                            skills.LB = skills.DE - 5;
+
                         break;
                     case "FS":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.CB = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.SS = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.CB >= skills.FS)
+                            skills.CB = skills.FS - 5;
+
+                        if (skills.SS >= skills.FS)
+                            skills.SS = skills.FS - 5;
+
                         break;
                     case "SS":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.LB = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
                         if (chanceForThirdSkill <= _settings.SecondarySkillChance)
                             skills.FS = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.LB >= skills.SS)
+                            skills.LB = skills.SS - 5;
+
+                        if (skills.FS >= skills.SS)
+                            skills.FS = skills.SS - 5;
+
                         break;
                     case "K":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.P = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.P >= skills.K)
+                            skills.P = skills.K - 5;
+
                         break;
                     case "P":
                         if (chanceForSecondSkill <= _settings.SecondarySkillChance)
                             skills.K = _rnd.Next(0, _settings.MaxSecondarySkill) + 1;
+
+                        if (skills.K >= skills.P)
+                            skills.K = skills.P - 5;
+
                         break;
                 }
                 return skills;
@@ -2052,6 +2145,37 @@ namespace CSFLDraftCreator.BusLogic
                 _log.Error("Error running SplitPositions - " + e.Message);
                 return null;
             }
+        }
+
+        private string CleanName(string s)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(s))
+                    return string.Empty;
+
+                s.Trim();
+
+                string n = string.Empty;
+
+                for (int i = 0; i < s.Length; i++)
+                { 
+                    if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') || (s[i] >= '0' && s[i] <= '9') || s[i] == '\''  || s[i] == '_' || s[i] == ' ' || s[i] == '-' || s[i] == '.' || s[i] == ',')
+                        n+=s[i];
+                }
+
+                return n;
+
+                
+
+            }
+            catch (Exception e)
+            {
+                _log.Error("Error running CleanName - " + e.Message);
+                return string.Empty;
+            }
+
+
         }
         #endregion
     }

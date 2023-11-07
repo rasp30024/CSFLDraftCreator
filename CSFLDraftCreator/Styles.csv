@@ -1,55 +1,55 @@
 ﻿StyleName,ApplyToPosition,RandomWeight,KeyAttributes,EnhancePersonalities,MufflePersonalities,AllowedPositionalTraits
-Default_QB,QB,90,none,none,none,any
-Mobile_QB,QB,3,"Spe, Agi, Intel, Str",none,none,"ClutchQB, Dualthreat, RunningQB"
-StrongArm_QB,QB,4,"Str, Arm, Acc",none,none,"ClutchQB, GameManager, Gunslinger"
-Possession _QB,QB,3,"Agi, Intel, Acc",none,none,any
-Default_RB,RB,90,none,none,none,any
-Elusive_RB,RB,4,"Agi, Spe, Intel",none,none,"AllPurposeRB, ScatBack"
-Power_RB,RB,3,"Agi, Str, Intel",none,none,"PowerRunner, AllPurposeRB"
-Receiving_RB,RB,3,"Agi, Spe, Intel, Han",none,none,"AllPurposeRB, ScatBack"
-Default_FB,FB,90,none,none,none,any
-Blocking_FB,FB,5,"Str, RBl, PBl, Agi",none,none,"BlockingFB, AthBlocker, TenaciousBlocker"
-Receiving_FB,FB,5,"Agi, Spe, Intel, Han",none,none,ReceiveFB
-Default_G,G,90,none,none,none,any
-RunBlocking_G,G,5,"Str, RBl",none,none,any
-PassProtecting_G,G,5,"PBl, Agi, Intel",none,none,any
-Default_T,T,90,none,none,none,any
-RunBlocking_T,T,5,"Str, RBl",none,none,any
-PassProtecting_T,T,5,"PBl, Agi, Intel",none,none,any
-Default_C,C,90,none,none,none,any
-RunBlocking_C,C,5,"Str, RBl",none,none,any
-PassProtecting_C,C,5,"PBl, Agi, Intel",none,none,any
-Default_TE,TE,90,none,none,none,any
-Blocking_TE,TE,5,"Str, RBl, PBl, Agi",none,none,"BlockingTE, AthBlocker, TenaciousBlocker"
-Receiving_TE,TE,5,"Agi, Spe, Intel, Han",none,none,ReceivingTE
-Default_WR,WR,90,none,none,none,any
-Speedy_WR,WR,4,Spe,none,none,DeepThreat
-RouteRunner_WR,WR,3,"Agi, Intel, Han",none,none,PossessionWR
-Physical_WR,WR,3,"Agi, Str, RBl",none,none,SlotReceiver
-Default_CB,CB,90,none,none,none,any
-BallHawk_CB,CB,2,"Spe, Agi, Intel, Han",none,none,any
-Speedy_CB,CB,3,Spe,none,none,any
-Agile_CB,CB,2,"Agi, Intel, Han",none,none,any
-Physical_CB,CB,3,"Str, Tck, Agi",none,none,any
-Default_LB,LB,90,none,none,none,any
-PassCoverage_LB,LB,3,"Spe, Agi, Intel",none,none,CoverageLB
-RunSupport_LB,LB,4,"Str, Agi, Tck",none,none,"Thumper, HybridLB"
-PassRusshing_LB,LB,3,"Spe, Str, Tck",none,none,SpeedRusher
-Default_DT,DT,90,none,none,none,any
-RunStuffer_DT,DT,5,"Str, Agi, Tck",none,none,"NoseTackle, BullRusher"
-PassRushing_DT,DT,5,"Agi, Spe, Intel",none,none,SpeedRusher
-Default_DE,DE,90,none,none,none,any
-RunStuffer_DE,DE,5,"Str, Agi, Tck",none,none,BullRusher
-PassRushing_DE,DE,5,"Agi, Spe, Intel",none,none,SpeedRusher
-Default_FS,FS,90,none,none,none,any
-PassSpecialist_FS,FS,5,"Spe, Agi, Intel, Han",none,none,Centerfielder
-RunSupport_FS,FS,5,"Agi, Intel, Tck",none,none,BoxSafety
-Default_SS,SS,90,none,none,none,any
-PassSpecialist_SS,SS,5,"Spe, Agi, Intel, Han",none,none,Centerfielder
-RunSupport_SS,SS,5,"Agi, Intel, Tck",none,none,BoxSafety
-Default_P,P,90,none,none,none,any
-Precision_P,P,5,"KAc, Intel",none,none,ClutchKicker
-Boomer_P,P,5,"KDi, Str",none,none,"PowerKicker, ClutchKicker"
-Default_K,K,90,none,none,none,any
-Precision_K,K,5,"KAc, Intel",none,none,ClutchKicker
-Boomer_K,K,5,"KDi, Str",none,none,"PowerKicker, ClutchKicker"
+Default_QB,QB,60,none,none,none,any
+Mobile_QB,QB,10,"Spe, Agi, Intel, Str",none,none,"ClutchQB, Dualthreat, RunningQB"
+StrongArm_QB,QB,15,"Str, Arm, Acc",none,none,"ClutchQB, GameManager, Gunslinger"
+Possession_QB,QB,15,"Agi, Intel, Acc",none,none,any
+Default_RB,RB,60,none,none,none,any
+Elusive_RB,RB,15,"Agi, Spe, Intel",none,none,"AllPurposeRB, ScatBack"
+Power_RB,RB,15,"Agi, Str, Intel",none,none,"PowerRunner, AllPurposeRB"
+Receiving_RB,RB,10,"Agi, Spe, Intel, Han",none,none,"AllPurposeRB, ScatBack"
+Default_FB,FB,60,none,none,none,any
+Blocking_FB,FB,25,"Str, RBl, PBl, Agi",none,none,"BlockingFB, AthBlocker, TenaciousBlocker"
+Receiving_FB,FB,15,"Agi, Spe, Intel, Han",none,none,ReceiveFB
+Default_G,G,60,none,none,none,any
+RunBlocking_G,G,25,"Str, RBl, Spe",none,none,any
+PassProtecting_G,G,15,"PBl, Agi, Intel",none,none,any
+Default_T,T,60,none,none,none,any
+RunBlocking_T,T,15,"Str, RBl, Spe",none,none,any
+PassProtecting_T,T,25,"PBl, Agi, Intel",none,none,any
+Default_C,C,60,none,none,none,any
+RunBlocking_C,C,20,"Str, RBl, Spe",none,none,any
+PassProtecting_C,C,20,"PBl, Agi, Intel",none,none,any
+Default_TE,TE,60,none,none,none,any
+Blocking_TE,TE,20,"Str, RBl, PBl, Agi",none,none,"BlockingTE, AthBlocker, TenaciousBlocker"
+Receiving_TE,TE,20,"Agi, Spe, Intel, Han",none,none,ReceivingTE
+Default_WR,WR,60,none,none,none,any
+Speedy_WR,WR,15,Spe,none,none,DeepThreat
+RouteRunner_WR,WR,15,"Agi, Intel, Han",none,none,PossessionWR
+Physical_WR,WR,10,"Agi, Str, RBl",none,none,SlotReceiver
+Default_CB,CB,60,none,none,none,any
+BallHawk_CB,CB,10,"Spe, Agi, Intel, Han",none,none,any
+Speedy_CB,CB,10,Spe,none,none,any
+Agile_CB,CB,10,"Agi, Intel, Han",none,none,any
+Physical_CB,CB,10,"Str, Tck, Agi",none,none,any
+Default_LB,LB,60,none,none,none,any
+PassCoverage_LB,LB,10,"Spe, Agi, Intel",none,none,CoverageLB
+RunSupport_LB,LB,15,"Str, Agi, Tck",none,none,"Thumper, HybridLB"
+PassRushing_LB,LB,15,"Spe, Str, Tck",none,none,SpeedRusher
+Default_DT,DT,60,none,none,none,any
+RunStuffer_DT,DT,20,"Str, Agi, Tck",none,none,"NoseTackle, BullRusher"
+PassRushing_DT,DT,20,"Agi, Spe, Intel",none,none,SpeedRusher
+Default_DE,DE,60,none,none,none,any
+RunStuffer_DE,DE,20,"Str, Agi, Tck",none,none,BullRusher
+PassRushing_DE,DE,20,"Agi, Spe, Intel",none,none,SpeedRusher
+Default_FS,FS,60,none,none,none,any
+PassSpecialist_FS,FS,25,"Spe, Agi, Intel, Han",none,none,Centerfielder
+RunSupport_FS,FS,15,"Agi, Intel, Tck",none,none,BoxSafety
+Default_SS,SS,60,none,none,none,any
+PassSpecialist_SS,SS,15,"Spe, Agi, Intel, Han",none,none,Centerfielder
+RunSupport_SS,SS,25,"Agi, Intel, Tck",none,none,BoxSafety
+Default_P,P,60,none,none,none,any
+Precision_P,P,20,"KAc, Intel",none,none,ClutchKicker
+Boomer_P,P,20,"KDi, Str",none,none,"PowerKicker, ClutchKicker"
+Default_K,K,60,none,none,none,any
+Precision_K,K,20,"KAc, Intel",none,none,ClutchKicker
+Boomer_K,K,20,"KDi, Str",none,none,"PowerKicker, ClutchKicker"
